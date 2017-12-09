@@ -2,7 +2,7 @@ from flask import Flask, render_template, json, request
 import sqlite3
 import string
 
-conn = sqlite3.connect('cd_by_zip')
+conn = sqlite3.connect('/home/adrianpearl/SearchTaxData/cd_by_zip')
 cursor = conn.cursor()
 
 state_abbrev = {}
@@ -128,7 +128,7 @@ def get_summary_data(state, district, whole_state):
 		sum(head_household_count),sum(total_dependents), sum(agi) * 1000
 		from agi_groups a, tax_info b, zips c
 		where a.category = b.agi_category
-		and b.zip = c.zip 
+		and b.zip = c.zip
 		and c.state = ?
 		group by agi_category
 		order by category"""
@@ -140,7 +140,7 @@ def get_summary_data(state, district, whole_state):
 		sum(head_household_count),sum(total_dependents), sum(agi) * 1000
 		from agi_groups a, tax_info b, zips c
 		where a.category = b.agi_category
-		and b.zip = c.zip 
+		and b.zip = c.zip
 		and c.state = ?
 		and c.cd = ?
 		group by agi_category
@@ -157,7 +157,7 @@ def get_field_data(irs_col, state, district, whole_state):
 		sum($FIELD) * 1000 as tax_return_dollars
 		from agi_groups a, tax_info b, zips c
 		where a.category = b.agi_category
-		and b.zip = c.zip 
+		and b.zip = c.zip
 		and c.state = ?
 		group by agi_category
 		order by category""")
@@ -169,7 +169,7 @@ def get_field_data(irs_col, state, district, whole_state):
 		sum($FIELD) * 1000 as tax_return_dollars
 		from agi_groups a, tax_info b, zips c
 		where a.category = b.agi_category
-		and b.zip = c.zip 
+		and b.zip = c.zip
 		and c.state = ?
 		and c.cd = ?
 		group by agi_category
@@ -182,16 +182,16 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     return render_template('index.html')
-    
+
 @app.route('/showSignUp')
 def showSignUp():
     return render_template('signup.html')
-    
+
 @app.route('/signUp',methods=['POST'])
 def signUp():
-	
+
 	print(request.form)
-	
+
 	# read the posted values from the UI
 	_taxreturnline = request.form['returnline']
 	_state = request.form['state']
@@ -214,13 +214,13 @@ def signUp():
 			output = [ix for ix in summary]
 			summary = get_field_data(_taxreturnline, _state, _district, False)
 			output = output+[ix for ix in summary]
-			
+
 		print([ix for ix in output])
-		
+
 		return json.dumps( [ix for ix in output] )
 	else:
 		return json.dumps({'html':'<span>Invalid query</span>'})
-    
+
 if __name__ == "__main__":
     app.run()
 

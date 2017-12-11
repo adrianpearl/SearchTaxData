@@ -2,7 +2,7 @@ from flask import Flask, render_template, json, request
 import sqlite3
 import string
 
-conn = sqlite3.connect('/home/adrianpearl/SearchTaxData/cd_by_zip.sqlite3')
+conn = sqlite3.connect('cd_by_zip.sqlite3')
 cursor = conn.cursor()
 
 state_abbrev = {}

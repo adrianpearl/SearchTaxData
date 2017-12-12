@@ -102,7 +102,11 @@ $(function() {
 					var row = $("<tr>");
 					var numcols = 0;
 					$.each(r, function(i, val) {
-						row.append($("<td>").text(val));
+						if (parseInt(val)) {
+							row.append($("<td>").text(parseInt(val).toLocaleString('en-US')));
+						} else {
+							row.append($("<td>").text(val));
+						}
 						row.append("</td>");
 						numcols ++;
 					});

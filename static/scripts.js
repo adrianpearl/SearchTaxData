@@ -95,11 +95,15 @@ $(function() {
 			return;
 		}
 		
+		console.log($('form').find('select[name="returnline"]').val());
+		console.log($('form').find('select[name="state"]').val());
+		console.log($('form').find('input[name="district"]').val());
+		console.log($('#wholestate').is(":checked"));
+		
 		$("#fielddatadiv").slideUp();
 		$("#summarydiv").slideUp();
 		$(".dnldcsv").slideUp("fast");
 		taxreturnline = $('form').find('select[name="returnline"]').val();
-		console.log(taxreturnline);
 		$("#summary tr").remove();
 		$("#taxcreditdata tr").remove();
 		$("#loader").show();

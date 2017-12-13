@@ -80,11 +80,30 @@ $(function() {
 	$("#summarydiv").slideUp();
 	
 	$('.getdata').click(function() {
+		
+		/* Any valid query must contain:
+		   a tax provision,
+		   a state, AND
+		   (a district OR the whole state checked off)
+		*/
+		if ( !($('form').find('select[name="returnline"]').val() && $('form').find('select[name="state"]').val()) ) {
+			/* INVALID QUERY */
+			console.log("invalid query - please select a tax provision and a state");
+			return;
+		} else if ( !( $('form').find('input[name="district"]').val() || $('#wholestate').is(":checked") ) ) {
+			console.log("invalid query - please select a district or query the whole state");
+			return;
+		}
+		
+		console.log($('form').find('select[name="returnline"]').val());
+		console.log($('form').find('select[name="state"]').val());
+		console.log($('form').find('input[name="district"]').val());
+		console.log($('#wholestate').is(":checked"));
+		
 		$("#fielddatadiv").slideUp();
 		$("#summarydiv").slideUp();
 		$(".dnldcsv").slideUp("fast");
 		taxreturnline = $('form').find('select[name="returnline"]').val();
-		console.log(taxreturnline);
 		$("#summary tr").remove();
 		$("#taxcreditdata tr").remove();
 		$("#loader").show();

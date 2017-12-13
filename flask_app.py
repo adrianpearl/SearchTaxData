@@ -121,6 +121,7 @@ state_cd_count['West Virginia'] = 3
 state_cd_count['Wyoming'] = 1
 
 def get_summary_data(state, district, whole_state):
+	print(state, district, whole_state)
 	if (whole_state):
 		q = """
 		select description as income_bracket,
@@ -142,6 +143,7 @@ def get_summary_data(state, district, whole_state):
 		where a.category = b.agi_category
 		and b.zip = c.zip
 		and c.state = ?
+		and b.state = c.state
 		and c.cd = ?
 		group by agi_category
 		order by category"""
@@ -150,6 +152,7 @@ def get_summary_data(state, district, whole_state):
 	return results
 
 def get_field_data(irs_col, state, district, whole_state):
+	print(irs_col, state, district, whole_state)
 	if (whole_state):
 		q = string.Template("""
 		select description as income_bracket,
@@ -171,6 +174,7 @@ def get_field_data(irs_col, state, district, whole_state):
 		where a.category = b.agi_category
 		and b.zip = c.zip
 		and c.state = ?
+		and b.state = c.state
 		and c.cd = ?
 		group by agi_category
 		order by category""")
@@ -195,7 +199,7 @@ def signUp():
 	# read the posted values from the UI
 	_taxreturnline = request.form['returnline']
 	_state = request.form['state']
-	_district = request.form['district']
+	_district = int(request.form['district'])
 	if ('wholestate' in request.form.keys()) or (state_cd_count[_state] == 1):
 		_wholestate = True
 	else:

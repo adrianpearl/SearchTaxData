@@ -2,7 +2,7 @@ from flask import Flask, render_template, json, request
 import sqlite3
 import string
 
-conn = sqlite3.connect('cd_by_zip2.sqlite3')
+conn = sqlite3.connect('cd_by_zip.sqlite3')
 cursor = conn.cursor()
 
 state_abbrev = {}
@@ -181,8 +181,6 @@ def get_field_data(irs_col, state, district, whole_state):
 		theresults = cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col),(state,district))
 	return theresults
 
-qres = get_summary_data("NY", "3", False)
-print([i for i in qres])
 app = Flask(__name__)
 
 @app.route("/")

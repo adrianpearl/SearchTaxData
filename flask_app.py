@@ -2,7 +2,7 @@ from flask import Flask, render_template, json, request
 import sqlite3
 import string
 
-conn = sqlite3.connect('cd_by_zip.sqlite3')
+conn = sqlite3.connect('cd_by_zip2.sqlite3')
 cursor = conn.cursor()
 
 state_abbrev = {}
@@ -121,6 +121,7 @@ state_cd_count['West Virginia'] = 3
 state_cd_count['Wyoming'] = 1
 
 def get_summary_data(state, district, whole_state):
+	print(state, district, whole_state)
 	if (whole_state):
 		q = """
 		select description as income_bracket,
@@ -142,6 +143,7 @@ def get_summary_data(state, district, whole_state):
 		where a.category = b.agi_category
 		and b.zip = c.zip
 		and c.state = ?
+		and b.state = c.state
 		and c.cd = ?
 		group by agi_category
 		order by category"""
@@ -150,6 +152,7 @@ def get_summary_data(state, district, whole_state):
 	return results
 
 def get_field_data(irs_col, state, district, whole_state):
+	print(irs_col, state, district, whole_state)
 	if (whole_state):
 		q = string.Template("""
 		select description as income_bracket,
@@ -171,12 +174,15 @@ def get_field_data(irs_col, state, district, whole_state):
 		where a.category = b.agi_category
 		and b.zip = c.zip
 		and c.state = ?
+		and b.state = c.state
 		and c.cd = ?
 		group by agi_category
 		order by category""")
 		theresults = cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col),(state,district))
 	return theresults
 
+qres = get_summary_data("NY", "3", False)
+print([i for i in qres])
 app = Flask(__name__)
 
 @app.route("/")
@@ -195,7 +201,7 @@ def signUp():
 	# read the posted values from the UI
 	_taxreturnline = request.form['returnline']
 	_state = request.form['state']
-	_district = request.form['district']
+	_district = int(request.form['district'])
 	if ('wholestate' in request.form.keys()) or (state_cd_count[_state] == 1):
 		_wholestate = True
 	else:

@@ -42,6 +42,7 @@ $(function() {
 		$("#fielddatadiv").slideUp();
 		$("#summarydiv").slideUp();
 		$(".dnldcsv").slideUp("fast");
+		console.log("slid up");
 		taxreturnline = $('form').find('select[name="returnline"]').val();
 		$("#summary tr").remove();
 		$("#taxcreditdata tr").remove();
@@ -76,6 +77,7 @@ $(function() {
 					}
 					
         		});
+        		console.log("new data loaded");
         		$("#loader").hide();
         		$(".dnldcsv").slideDown();
         		$("#fielddatadiv").slideDown(function(){

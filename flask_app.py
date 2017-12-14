@@ -6,6 +6,17 @@ conn = sqlite3.connect('cd_by_zip.sqlite3')
 cursor = conn.cursor()
 one_district = ['AK', 'DE', 'DC', 'MT', 'ND', 'SD', 'VT', 'WY']
 
+def get_zipcode_list(self, state, district):
+        q = """
+            select zip
+            from zips
+            where state = ?
+            and cd = ?
+            order by zip
+            """
+        results = self.cursor.execute(q,(state,district))
+        return results
+
 def get_summary_data(state, district, whole_state):
 	print(state, district, whole_state)
 	if (whole_state):
@@ -50,6 +61,7 @@ def get_field_data(irs_col, state, district, whole_state):
 		and b.state = ?
 		group by agi_category
 		order by category""")
+    
 		theresults = cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col),(state,))
 	else:
 		q = string.Template("""

@@ -1,62 +1,5 @@
-var state_cd_count = {};
 var onscreendata = "";
 var taxreturnline = "";
-
-state_cd_count['Alaska'] = 1
-state_cd_count['Alabama'] = 7
-state_cd_count['Arkansas'] = 4
-state_cd_count['American Samoa'] = 1
-state_cd_count['Arizona'] = 9
-state_cd_count['California'] = 53
-state_cd_count['Colorado'] = 7
-state_cd_count['Connecticut'] = 5
-state_cd_count['District of Columbia'] = 1
-state_cd_count['Delaware'] = 1
-state_cd_count['Florida'] = 27
-state_cd_count['Georgia'] = 14
-state_cd_count['Guam'] = 1
-state_cd_count['Hawaii'] = 2
-state_cd_count['Iowa'] = 4
-state_cd_count['Idaho'] = 2
-state_cd_count['Illinois'] = 18
-state_cd_count['Indiana'] = 9
-state_cd_count['Kansas'] = 4
-state_cd_count['Kentucky'] = 6
-state_cd_count['Louisiana'] = 6
-state_cd_count['Massachusetts'] = 9
-state_cd_count['Maryland'] = 8
-state_cd_count['Maine'] = 2
-state_cd_count['Michigan'] = 14
-state_cd_count['Minnesota'] = 8
-state_cd_count['Missouri'] = 8
-state_cd_count['Northern Mariana Islands'] = 1
-state_cd_count['Mississippi'] = 4
-state_cd_count['Montana'] = 1
-state_cd_count['North Carolina'] = 13
-state_cd_count['North Dakota'] = 1
-state_cd_count['Nebraska'] = 3
-state_cd_count['New Hampshire'] = 2
-state_cd_count['New Jersey'] = 12
-state_cd_count['New Mexico'] = 3
-state_cd_count['Nevada'] = 4
-state_cd_count['New York'] = 27
-state_cd_count['Ohio'] = 16
-state_cd_count['Oklahoma'] = 5
-state_cd_count['Oregon'] = 5
-state_cd_count['Pennsylvania'] = 18
-state_cd_count['Puerto Rico'] = 1
-state_cd_count['Rhode Island'] = 2
-state_cd_count['South Carolina'] = 7
-state_cd_count['South Dakota'] = 1
-state_cd_count['Tennessee'] = 9
-state_cd_count['Texas'] = 36
-state_cd_count['Utah'] = 4
-state_cd_count['Virginia'] = 11
-state_cd_count['Vermont'] = 1
-state_cd_count['Washington'] = 10
-state_cd_count['Wisconsin'] = 8
-state_cd_count['West Virginia'] = 3
-state_cd_count['Wyoming'] = 1
 
 headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total Dependents", "Adjusted Gross Income"]
 
@@ -68,11 +11,7 @@ $(function() {
     	allowClear: true,
     	width: 'resolve'
     });
-    $('#state').select2({
-		placeholder: "State",
-    	allowClear: true,
-    	width: 'resolve'
-    });
+    
 	$("#loader").hide();
 	$(".dnldcsv").hide();
 	
@@ -103,6 +42,7 @@ $(function() {
 		$("#fielddatadiv").slideUp();
 		$("#summarydiv").slideUp();
 		$(".dnldcsv").slideUp("fast");
+		console.log("slid up");
 		taxreturnline = $('form').find('select[name="returnline"]').val();
 		$("#summary tr").remove();
 		$("#taxcreditdata tr").remove();
@@ -137,6 +77,7 @@ $(function() {
 					}
 					
         		});
+        		console.log("new data loaded");
         		$("#loader").hide();
         		$(".dnldcsv").slideDown();
         		$("#fielddatadiv").slideDown(function(){
@@ -148,20 +89,6 @@ $(function() {
 			}
 		});
 	});
-	
-	$("#state").on("change",function() {
-		console.log('onchange');
-    	var state = this.value;
-    	console.log(state);
-    	var cdcount = state_cd_count[state]
-
-    	$("#district").attr({
-       		"max" : cdcount
-    	});
-    	
-    	if ($("#district").val() > cdcount)
-    		$("#district").val(cdcount);
-  	});
   	
   	$('.dnldcsv').click(function() {
   		var colDelimiter = ',';

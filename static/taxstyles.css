@@ -65,13 +65,16 @@ body {
   width: calc(30% - 25px);
   margin-right: 25px;
 }
+#mapdiv {
+  width: 68%;
+}
 #summarydiv {
   width: 98%;
   margin: 25px auto;
 }
 #fielddatadiv {
-  width: 68%;
-  padding: 0;
+  width: 98%;
+  margin: 25px auto;
 }
 
 table {

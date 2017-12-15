@@ -1593,28 +1593,6 @@ var simplemaps_congressmap_mapdata={
 		states: ['WY01']
 	} 
   },
-  locations: {
-    "0": {
-      name: "New York",
-      lat: "40.71",
-      lng: "-74.0059731",
-      description: "default",
-      color: "default",
-      url: "default",
-      size: "default"
-    },
-    "1": {
-      name: "Anchorage",
-      lat: 61.2180556,
-      lng: -149.9002778
-    },
-    "6": {
-      name: "Honolulu",
-      lat: 21.3069444,
-      lng: -157.8583333,
-      color: "default",
-      description: "default"
-    }
-  },
+  locations: {},
   labels: {}
 };

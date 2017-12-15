@@ -4,15 +4,15 @@ var simplemaps_congressmap_mapdata={
 	width: "responsive", //or 'responsive'
     background_color: "#FFFFFF",
     background_transparent: "no",
-    border_color: "#ffffff",
+    border_color: "#fff",
     popups: "detect",
     
 		//State defaults
-		state_description: "State description",
+	state_description: "",
     state_color: "#88A4BC",
     state_hover_color: "#3B729F",
-    state_url: "http://simplemaps.com",
-    border_size: 1.5,
+    //state_url: "http://simplemaps.com",
+    border_size: 0.5,
     all_states_inactive: "no",
     all_states_zoomable: "yes",
     
@@ -46,11 +46,10 @@ var simplemaps_congressmap_mapdata={
     initial_back: "no",
     initial_zoom: "-1",
     initial_zoom_solo: "no",
-    region_opacity: 1,
     region_hover_opacity: 0.6,
     zoom_out_incrementally: "yes",
-    zoom_percentage: 0.99,
-    zoom_time: 0.5,
+    zoom_percentage: 0.80,
+    zoom_time: 0.7,
     
 		//Popup settings
 		popup_color: "white",
@@ -76,10 +75,6 @@ var simplemaps_congressmap_mapdata={
   state_specific: {
     AK01: {
       name: "District 01",
-      description: "default",
-      color: "default",
-      hover_color: "default",
-      url: "default"
     },
     AL01: {
       name: "District 01"

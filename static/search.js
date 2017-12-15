@@ -99,8 +99,11 @@ $(document).ready(function(){
 			}
 			console.log(cd);
 			simplemaps_congressmap.state_zoom(cd);
+		} else {
+			$("#district").val(state_cd_count[state]);
 		}
-	});					
+	});		
+				
 })
 
 simplemaps_congressmap.hooks.zoomable_click_region=function(id){

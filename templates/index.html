@@ -26,6 +26,7 @@
   
   	<div class="container-fluid">
   	<div class="row">
+  	
  		<div class="col-sm-4 col-md-3 sidebar">
     		<form class="form-signin" id="taxdataform">
     			<select class="nav-sidebar nav selectpicker" name="returnline" id="returnline" data-live-search="true" data-width="100%">
@@ -99,7 +100,9 @@
 				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
     		</form>
     		<div id="loader"></div>
+    		<p id="invalid"></p>
     	</div>
+    	
     	<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
     		<h1 class="page-header">Search Tax Data in Your District</h1>
     		<div id="map" style="width: 100%"></div><br>
@@ -119,6 +122,7 @@
 				</div>
 				
     	</div>
+    	
     </div>
     </div>
  

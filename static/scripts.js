@@ -20,9 +20,11 @@ $(function() {
 		*/
 		if ( !($('form').find('select[name="returnline"]').val() && $('form').find('select[name="state"]').val()) ) {
 			/* INVALID QUERY */
+			$('#invalid').text('Invalid query - please select a tax provision and a state');
 			console.log("invalid query - please select a tax provision and a state");
 			return;
 		} else if ( !( $('form').find('input[name="district"]').val() || $('#wholestate').is(":checked") ) ) {
+			$('#invalid').text('Invalid query - please select a district or query the whole state');
 			console.log("invalid query - please select a district or query the whole state");
 			return;
 		}
@@ -32,6 +34,7 @@ $(function() {
 		console.log($('form').find('input[name="district"]').val());
 		console.log($('#wholestate').is(":checked"));
 		
+		$('#invalid').text('');
 		$("#taxcreditdatadiv").slideUp();
 		$("#summarydiv").slideUp();
 		$(".sub-header").slideUp();

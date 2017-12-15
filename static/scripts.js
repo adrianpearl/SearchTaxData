@@ -6,17 +6,10 @@ headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total
 $(function() {
 
 	console.log('hello!');
-	$('#returnline').select2({
-		placeholder: "Tax provision",
-    	allowClear: true,
-    	width: 'resolve'
-    });
     
 	$("#loader").hide();
 	$(".dnldcsv").hide();
-	
-	$("#fielddatadiv").slideUp();
-	$("#summarydiv").slideUp();
+	$(".sub-header").hide();
 	
 	$('.getdata').click(function() {
 		
@@ -39,8 +32,9 @@ $(function() {
 		console.log($('form').find('input[name="district"]').val());
 		console.log($('#wholestate').is(":checked"));
 		
-		$("#fielddatadiv").slideUp();
+		$("#taxcreditdatadiv").slideUp();
 		$("#summarydiv").slideUp();
+		$(".sub-header").slideUp();
 		$(".dnldcsv").slideUp("fast");
 		console.log("slid up");
 		taxreturnline = $('form').find('select[name="returnline"]').val();
@@ -80,7 +74,8 @@ $(function() {
         		console.log("new data loaded");
         		$("#loader").hide();
         		$(".dnldcsv").slideDown();
-        		$("#fielddatadiv").slideDown(function(){
+        		$(".sub-header").slideDown();
+        		$("#taxcreditdatadiv").slideDown(function(){
             		$("#summarydiv").slideDown();
             	});
 			},

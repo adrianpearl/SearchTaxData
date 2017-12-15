@@ -2,112 +2,125 @@
 <html lang="en">
   <head>
     <title>Search U.S. Tax Data</title>
- 	
- 	<link rel="stylesheet" href="../static/taxstyles.css" />
- 	<link rel="stylesheet" href="{{ url_for('static', filename='taxstyles.css') }}" />
- 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
- 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+ 	<link rel="stylesheet" href="../static/dashtest.css" />
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+ 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  	<script src="../static/scripts.js"></script>
- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
  	<script src="../static/mapdata.js"></script>
 	<script src="../static/congressmap.js"></script>
 	<script src="../static/search.js"></script>
- 	<!--<script src="{{ url_for('static', filename='scripts.js') }}"></script>-->
+ 	
+ 	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     
   </head>
  
   <body>
- 	
-    <h1>Usage of Tax Provisions</h1>
-    <div class="content" id="formdiv">
-    <form class="form-signin" id="taxdataform">
-        <select name="returnline" id="returnline" class="taxselect" style="width:100%">
-        	<option></option>
-        	<option value="additional child credit">additional child credit</option> 
-			<option value="additional medicare tax">additional medicare tax</option> 
-			<option value="advance premium credit">advance premium credit</option> 
-			<option value="agi for itemized returns">agi for itemized returns</option> 
-			<option value="amt">amt</option> 
-			<option value="business net income">business net income</option> 
-			<option value="capital gains">capital gains</option> 
-			<option value="child credit">child credit</option> 
-			<option value="child dependent care credit">child dependent care credit</option> 
-			<option value="contributions">contributions</option> 
-			<option value="domestic production">domestic production</option> 
-			<option value="earned income credit">earned income credit</option> 
-			<option value="educator expense">educator expense</option> 
-			<option value="excess advance premium tax credit repayment">excess advance premium tax credit repayment</option> 
-			<option value="excess earned income credit refundable">excess earned income credit refundable</option> 
-			<option value="foreign tax credit">foreign tax credit</option> 
-			<option value="health individual responsibility payment">health individual responsibility payment</option> 
-			<option value="income before credit">income before credit</option> 
-			<option value="income tax">income tax</option> 
-			<option value="ira payment">ira payment</option> 
-			<option value="itemize">itemize</option> 
-			<option value="mortgage interest">mortgage interest</option> 
-			<option value="net investment income tax">net investment income tax</option> 
-			<option value="net premium credit">net premium credit</option> 
-			<option value="nonrefundable education credit">nonrefundable education credit</option> 
-			<option value="ordinary dividends">ordinary dividends</option> 
-			<option value="partnership s corp">partnership s corp</option> 
-			<option value="qualified dividends">qualified dividends</option> 
-			<option value="real estate tax">real estate tax</option> 
-			<option value="refund">refund</option> 
-			<option value="refundable education credit">refundable education credit</option> 
-			<option value="residential energy credit">residential energy credit</option> 
-			<option value="retirement savings credit">retirement savings credit</option> 
-			<option value="salaries wages">salaries wages</option> 
-			<option value="sales tax">sales tax</option> 
-			<option value="self employment health insurance">self employment health insurance</option> 
-			<option value="self employment retirement">self employment retirement</option> 
-			<option value="self employment tax">self employment tax</option> 
-			<option value="slit refund">slit refund</option> 
-			<option value="state local income tax">state local income tax</option> 
-			<option value="statutory adjustment">statutory adjustment</option> 
-			<option value="student loan interest">student loan interest</option> 
-			<option value="tax due at filing">tax due at filing</option> 
-			<option value="tax liability">tax liability</option> 
-			<option value="taxable income">taxable income</option> 
-			<option value="taxable interest">taxable interest</option> 
-			<option value="taxable ira">taxable ira</option> 
-			<option value="taxable pensions annuities">taxable pensions annuities</option> 
-			<option value="taxable social security">taxable social security</option> 
-			<option value="taxes paid">taxes paid</option> 
-			<option value="total income">total income</option> 
-			<option value="total premium credit">total premium credit</option> 
-			<option value="total tax credits">total tax credits</option> 
-			<option value="total tax payments">total tax payments</option> 
-			<option value="tuition">tuition</option> 
-			<option value="unemployment compensation">unemployment compensation</option> 
-		</select>
-        <select name="state" id="state" class="form-control" form="taxdataform" style="width:100%">
-        	<option></option>
-		</select>
-        <input type="number" name="district" id="district" min="1" class="form-control" placeholder="District">
-        <div class="inline-field">
-  			<input type="checkbox" name="wholestate" id="wholestate" class="form-control">
-  			<label for="wholestate">Whole State?</label>
-		</div>
-        <br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">go</button>
-        <br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
-        <div id="loader"></div>
-    </form>
+  
+  	<div class="container-fluid">
+  	<div class="row">
+ 		<div class="col-sm-4 col-md-3 sidebar">
+    		<form class="form-signin" id="taxdataform">
+    			<select class="nav-sidebar nav selectpicker" name="returnline" id="returnline" data-live-search="true" data-width="100%">
+    				<option value="" selected disabled>Tax Provision</option>
+					<option value="additional child credit">additional child credit</option> 
+					<option value="additional medicare tax">additional medicare tax</option> 
+					<option value="advance premium credit">advance premium credit</option> 
+					<option value="agi for itemized returns">agi for itemized returns</option> 
+					<option value="amt">amt</option> 
+					<option value="business net income">business net income</option> 
+					<option value="capital gains">capital gains</option> 
+					<option value="child credit">child credit</option> 
+					<option value="child dependent care credit">child dependent care credit</option> 
+					<option value="contributions">contributions</option> 
+					<option value="domestic production">domestic production</option> 
+					<option value="earned income credit">earned income credit</option> 
+					<option value="educator expense">educator expense</option> 
+					<option value="excess advance premium tax credit repayment">excess advance premium tax credit repayment</option> 
+					<option value="excess earned income credit refundable">excess earned income credit refundable</option> 
+					<option value="foreign tax credit">foreign tax credit</option> 
+					<option value="health individual responsibility payment">health individual responsibility payment</option> 
+					<option value="income before credit">income before credit</option> 
+					<option value="income tax">income tax</option> 
+					<option value="ira payment">ira payment</option> 
+					<option value="itemize">itemize</option> 
+					<option value="mortgage interest">mortgage interest</option> 
+					<option value="net investment income tax">net investment income tax</option> 
+					<option value="net premium credit">net premium credit</option> 
+					<option value="nonrefundable education credit">nonrefundable education credit</option> 
+					<option value="ordinary dividends">ordinary dividends</option> 
+					<option value="partnership s corp">partnership s corp</option> 
+					<option value="qualified dividends">qualified dividends</option> 
+					<option value="real estate tax">real estate tax</option> 
+					<option value="refund">refund</option> 
+					<option value="refundable education credit">refundable education credit</option> 
+					<option value="residential energy credit">residential energy credit</option> 
+					<option value="retirement savings credit">retirement savings credit</option> 
+					<option value="salaries wages">salaries wages</option> 
+					<option value="sales tax">sales tax</option> 
+					<option value="self employment health insurance">self employment health insurance</option> 
+					<option value="self employment retirement">self employment retirement</option> 
+					<option value="self employment tax">self employment tax</option> 
+					<option value="slit refund">slit refund</option> 
+					<option value="state local income tax">state local income tax</option> 
+					<option value="statutory adjustment">statutory adjustment</option> 
+					<option value="student loan interest">student loan interest</option> 
+					<option value="tax due at filing">tax due at filing</option> 
+					<option value="tax liability">tax liability</option> 
+					<option value="taxable income">taxable income</option> 
+					<option value="taxable interest">taxable interest</option> 
+					<option value="taxable ira">taxable ira</option> 
+					<option value="taxable pensions annuities">taxable pensions annuities</option> 
+					<option value="taxable social security">taxable social security</option> 
+					<option value="taxes paid">taxes paid</option> 
+					<option value="total income">total income</option> 
+					<option value="total premium credit">total premium credit</option> 
+					<option value="total tax credits">total tax credits</option> 
+					<option value="total tax payments">total tax payments</option> 
+					<option value="tuition">tuition</option> 
+					<option value="unemployment compensation">unemployment compensation</option> 
+				</select>
+				<select name="state" id="state" form="taxdataform" class="nav-sidebar nav selectpicker" data-live-search="true" data-width="100%">
+					<option value="" selected disabled>State</option>
+				</select>
+				<input type="number" name="district" id="district" min="1" class="form-control nav-number" placeholder="District">
+				<div class="inline-field">
+					<input type="checkbox" name="wholestate" id="wholestate">
+					<label for="wholestate">Whole State?</label>
+				</div>
+				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">go</button>
+				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
+        		<div id="loader"></div>
+    		</form>
+    	</div>
+    	<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
+    		<h1 class="page-header">Search Tax Data in Your District</h1>
+    		<div id="map" style="width: 100%"></div><br>
+    		<h2 class="sub-header">Raw Data</h2>
+    		
+          		<div class="table-responsive" id="summarydiv">
+            		<table class="table table-striped" id="summary">
+  						<tbody>
+  						</tbody>
+					</table>
+				</div>
+				<div class="table-responsive" id="taxcreditdatadiv">
+            		<table class="table table-striped" id="taxcreditdata">
+  						<tbody>
+  						</tbody>
+					</table>
+				</div>
+				
+    	</div>
     </div>
-    <div class="content" id="mapdiv">
-    	<div id="map" style="width: 100%"></div>
     </div>
-    <div class="content" id="fielddatadiv">
-    	<table id="taxcreditdata">
-  			<tbody>
-  			</tbody>
-		</table>
-	</div>
-	<div class="content" id="summarydiv">
-		<table id="summary">
-  			<tbody>
-  			</tbody>
-		</table>
-	</div>
  
   </body>
 </html>

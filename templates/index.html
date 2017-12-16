@@ -8,6 +8,7 @@
     
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
  	<link rel="stylesheet" href="../static/dashtest.css" />
+ 	<link rel="stylesheet" href="../static/buttonstyle.css" />
  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  	<script src="../static/scripts.js"></script>
@@ -88,16 +89,31 @@
 					<option value="tuition">tuition</option> 
 					<option value="unemployment compensation">unemployment compensation</option> 
 				</select>
+				
 				<select name="state" id="state" form="taxdataform" class="nav-sidebar nav selectpicker" data-live-search="true" data-width="100%">
 					<option value="" selected disabled>State</option>
 				</select>
+				
 				<input type="number" name="district" id="district" min="1" class="form-control nav-number" placeholder="District">
-				<div class="inline-field">
-					<input type="checkbox" name="wholestate" id="wholestate">
-					<label for="wholestate">Whole State?</label>
+				
+				<div class="button-wrap">
+					<input class="hidden radio-label" type="radio" name="cdstatenation" value="cdonly" id="cd-button" checked="checked"/>
+					<label class="button-label" id="cd-label" for="cd-button">
+					  <h1>District</h1>
+					</label>
+					<input class="hidden radio-label" type="radio" name="cdstatenation" value="stateonly" id="state-button"/>
+					<label class="button-label" id="state-label" for="state-button">
+					  <h1>State</h1>
+					</label>
+					<input class="hidden radio-label" type="radio" name="cdstatenation" value="nation" id="nation-button"/>
+					<label class="button-label" id="nation-label" for="nation-button">
+					  <h1>Nation</h1>
+					</label>
 				</div>
+				
 				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">go</button>
 				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
+				
     		</form>
     		<div id="loader"></div>
     		<p id="invalid"></p>

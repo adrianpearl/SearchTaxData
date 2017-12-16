@@ -97,12 +97,13 @@ def signUp():
 	# read the posted values from the UI
 	_taxreturnline = request.form['returnline']
 	_state = request.form['state']
-	_district = int(request.form['district'])
+	_district = request.form['district']
 	print(_state)
 	if ('wholestate' in request.form.keys()) or (_state in one_district):
 		_wholestate = True
 	else:
 		_wholestate = False
+	print("wholestate: ", _wholestate)
 	# validate the received values
 	if _taxreturnline and _state and (_district or _wholestate):
 		_taxreturnline = "_".join(_taxreturnline.split(" "))
@@ -112,9 +113,10 @@ def signUp():
 			output = get_field_data(_taxreturnline, _state, _district, True)
 			taxdata = [ix for ix in output]
 		else:
-			output = get_summary_data(_state, _district, True)
+			_district = int(_district)
+			output = get_summary_data(_state, _district, False)
 			summary = [ix for ix in output]
-			output = get_field_data(_taxreturnline, _state, _district, True)
+			output = get_field_data(_taxreturnline, _state, _district, False)
 			taxdata = [ix for ix in output]
 		
 		print(summary)

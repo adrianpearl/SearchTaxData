@@ -59,26 +59,25 @@ state_cd_count['WY'] = 1
 
 $(document).ready(function(){
 	last_zoom = "out";
-
-	var state_list=$("#state");
 	
 	for (var region in simplemaps_congressmap_mapdata.regions){
 		var key=region;
+		//console.log(key);
 		var value=simplemaps_congressmap_mapdata.regions[region].name;
-		 state_list.append($("<option></option>").attr("value",key).text(value)); 
+		//console.log(value);
+		$("#state").append($("<option></option>").attr("value",key).text(value));
+		$("#state").selectpicker("refresh");
 	}	
-						
-	state_list.select2({
-		placeholder: "State",
-    	allowClear: true,
-    	width: 'resolve'
-    });
     
-	state_list.change(function(){
+	$("#state").change(function(){
 		console.log('onchange');
     	var state = this.value;
     	var cdcount = state_cd_count[state]
     	console.log(cdcount);
+    	
+    	if (state) {
+    		simplemaps_congressmap.region_zoom(state);
+    	}
 
     	$("#district").attr({
        		"max" : cdcount
@@ -86,7 +85,25 @@ $(document).ready(function(){
     	
     	if ($("#district").val() > cdcount)
     		$("#district").val(cdcount);
-	});					
+	});
+	
+	$("#district").change(function(){
+    	var state = $('form').find('select[name="state"]').val();
+    	var cd = parseInt(this.value);
+		if (cd <= state_cd_count[state]) {
+			console.log("cd zoom");
+			if (cd < 10) {
+				cd = state + "0" + cd;
+			} else {
+				cd = state + cd.toString();
+			}
+			console.log(cd);
+			simplemaps_congressmap.state_zoom(cd);
+		} else {
+			$("#district").val(state_cd_count[state]);
+		}
+	});		
+				
 })
 
 simplemaps_congressmap.hooks.zoomable_click_region=function(id){
@@ -106,6 +123,7 @@ simplemaps_congressmap.hooks.zooming_complete=function(){
 	var zoom = simplemaps_congressmap.zoom_level;
 	if (zoom == "out") {
 		$("#state").val("");
+		$("#state").trigger('change');
 		$("#district").val("");
 		$(".form-control").trigger('change');
 		return;

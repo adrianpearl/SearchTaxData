@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, jsonify
 import sqlite3
 import string
 
@@ -97,29 +97,32 @@ def signUp():
 	# read the posted values from the UI
 	_taxreturnline = request.form['returnline']
 	_state = request.form['state']
-	_district = int(request.form['district'])
+	_district = request.form['district']
 	print(_state)
 	if ('wholestate' in request.form.keys()) or (_state in one_district):
 		_wholestate = True
 	else:
 		_wholestate = False
+	print("wholestate: ", _wholestate)
 	# validate the received values
 	if _taxreturnline and _state and (_district or _wholestate):
 		_taxreturnline = "_".join(_taxreturnline.split(" "))
 		if _wholestate:
-			summary = get_summary_data(_state, _district, True)
-			output = [ix for ix in summary]
-			summary = get_field_data(_taxreturnline, _state, _district, True)
-			output = output+[ix for ix in summary]
+			output = get_summary_data(_state, _district, True)
+			summary = [ix for ix in output]
+			output = get_field_data(_taxreturnline, _state, _district, True)
+			taxdata = [ix for ix in output]
 		else:
-			summary = get_summary_data(_state, _district, False)
-			output = [ix for ix in summary]
-			summary = get_field_data(_taxreturnline, _state, _district, False)
-			output = output+[ix for ix in summary]
+			_district = int(_district)
+			output = get_summary_data(_state, _district, False)
+			summary = [ix for ix in output]
+			output = get_field_data(_taxreturnline, _state, _district, False)
+			taxdata = [ix for ix in output]
+		
+		print(summary)
+		print(taxdata)
 
-		print([ix for ix in output])
-
-		return json.dumps( [ix for ix in output] )
+		return jsonify(r_summary=summary, r_taxdata=taxdata)
 	else:
 		return json.dumps({'html':'<span>Invalid query</span>'})
 

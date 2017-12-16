@@ -12,27 +12,45 @@ $(function() {
 	$(".sub-header").hide();
 	
 	$('.getdata').click(function() {
+	
+		/* Querying a district, state, or the nation? */
+		var cd_state_nation = "";
+		var radios = document.getElementsByName('cdstatenation');
+		for (var i = 0, length = radios.length; i < length; i++)
+		{
+		 if (radios[i].checked)
+		 {
+		 	cd_state_nation = radios[i].value;
+		  	break;
+		 }
+		}
+		
+		var returnline = $('form').find('select[name="returnline"]').val();
+		var state = $('form').find('select[name="state"]').val();
+		var cd = $('form').find('input[name="district"]').val();
+		console.log(cd_state_nation, returnline, state, cd);
 		
 		/* Any valid query must contain:
 		   a tax provision,
 		   a state, AND
 		   (a district OR the whole state checked off)
 		*/
-		if ( !($('form').find('select[name="returnline"]').val() && $('form').find('select[name="state"]').val()) ) {
+		if ( !returnline ) {
 			/* INVALID QUERY */
-			$('#invalid').text('Invalid query - please select a tax provision and a state');
-			console.log("invalid query - please select a tax provision and a state");
+			$('#invalid').text('Invalid query - please select a tax provision');
+			console.log("invalid query - please select a tax provision");
 			return;
-		} else if ( !( $('form').find('input[name="district"]').val() || $('#wholestate').is(":checked") ) ) {
-			$('#invalid').text('Invalid query - please select a district or query the whole state');
-			console.log("invalid query - please select a district or query the whole state");
+		} 
+		else if ( (!state) && cd_state_nation != "nation" ) {
+			$('#invalid').text('Invalid query - please select a state or query the whole nation');
+			console.log("invalid query - please select a state or query the whole nation");
 			return;
 		}
-		
-		console.log($('form').find('select[name="returnline"]').val());
-		console.log($('form').find('select[name="state"]').val());
-		console.log($('form').find('input[name="district"]').val());
-		console.log($('#wholestate').is(":checked"));
+		else if ( (!cd) && cd_state_nation == "cdonly" ) {
+			$('#invalid').text('Invalid query - please select a district or query a state or the nation');
+			console.log("invalid query - please select a district or query a state or the nation");
+			return;
+		}
 		
 		$('#invalid').text('');
 		$("#taxcreditdatadiv").slideUp();

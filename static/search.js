@@ -90,6 +90,7 @@ $(document).ready(function(){
 	$("#district").change(function(){
     	var state = $('form').find('select[name="state"]').val();
     	var cd = parseInt(this.value);
+    	console.log(cd);
 		if (cd <= state_cd_count[state]) {
 			console.log("cd zoom");
 			if (cd < 10) {
@@ -99,7 +100,7 @@ $(document).ready(function(){
 			}
 			console.log(cd);
 			simplemaps_congressmap.state_zoom(cd);
-		} else {
+		} else if (cd > state_cd_count[state]) {
 			$("#district").val(state_cd_count[state]);
 		}
 	});		

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, jsonify
 import sqlite3
 import string
 
@@ -107,19 +107,20 @@ def signUp():
 	if _taxreturnline and _state and (_district or _wholestate):
 		_taxreturnline = "_".join(_taxreturnline.split(" "))
 		if _wholestate:
-			summary = get_summary_data(_state, _district, True)
-			output = [ix for ix in summary]
-			summary = get_field_data(_taxreturnline, _state, _district, True)
-			output = output+[ix for ix in summary]
+			output = get_summary_data(_state, _district, True)
+			summary = [ix for ix in output]
+			output = get_field_data(_taxreturnline, _state, _district, True)
+			taxdata = [ix for ix in output]
 		else:
-			summary = get_summary_data(_state, _district, False)
-			output = [ix for ix in summary]
-			summary = get_field_data(_taxreturnline, _state, _district, False)
-			output = output+[ix for ix in summary]
+			output = get_summary_data(_state, _district, True)
+			summary = [ix for ix in output]
+			output = get_field_data(_taxreturnline, _state, _district, True)
+			taxdata = [ix for ix in output]
+		
+		print(summary)
+		print(taxdata)
 
-		print([ix for ix in output])
-
-		return json.dumps( [ix for ix in output] )
+		return jsonify(r_summary=summary, r_taxdata=taxdata)
 	else:
 		return json.dumps({'html':'<span>Invalid query</span>'})
 

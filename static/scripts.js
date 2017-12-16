@@ -40,10 +40,12 @@ $(function() {
 		$(".sub-header").slideUp();
 		$(".dnldcsv").slideUp("fast");
 		console.log("slid up");
+		
 		taxreturnline = $('form').find('select[name="returnline"]').val();
 		$("#summary tr").remove();
 		$("#taxcreditdata tr").remove();
 		$("#loader").show();
+		
 		$.ajax({
 			url: '/signUp',
 			data: $('form').serialize(),
@@ -52,11 +54,14 @@ $(function() {
 				console.log(response);
 				$("#summary").append("<tr><th>AGI Bracket</th><th>Total</th><th>Single</th><th>Joint</th><th>Head Household</th><th>Total Dependents</th><th>Adjusted Gross Income</th></tr>");
 				$("#taxcreditdata").append("<tr><th>AGI Bracket</th><th>" + taxreturnline + ": Count</th><th>" + taxreturnline + ": Dollars</th>");
-				var data = eval(response);
-				onscreendata = data;
-				$.each(data, function(i,r) {
+				//var data = JSON.parse(response);
+				//onscreendata = data;
+				
+				var summary = response.r_summary;
+				var taxdata = response.r_taxdata;
+				
+				$.each(summary, function(i,r) {
 					var row = $("<tr>");
-					var numcols = 0;
 					$.each(r, function(i, val) {
 						if (parseInt(val)) {
 							row.append($("<td>").text(parseInt(val).toLocaleString('en-US')));
@@ -64,16 +69,25 @@ $(function() {
 							row.append($("<td>").text(val));
 						}
 						row.append("</td>");
-						numcols ++;
 					});
 					row.append("</tr>");
-					if (numcols == 3) {
-						$("#taxcreditdata").append(row);
-					} else {
-						$("#summary").append(row);
-					}
+					$("#summary").append(row);
+				});
+				
+				$.each(taxdata, function(i,r) {
+					var row = $("<tr>");
+					$.each(r, function(i, val) {
+						if (parseInt(val)) {
+							row.append($("<td>").text(parseInt(val).toLocaleString('en-US')));
+						} else {
+							row.append($("<td>").text(val));
+						}
+						row.append("</td>");
+					});
+					row.append("</tr>");
+					$("#taxcreditdata").append(row);
+				});
 					
-        		});
         		console.log("new data loaded");
         		$("#loader").hide();
         		$(".dnldcsv").slideDown();

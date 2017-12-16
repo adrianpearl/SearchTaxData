@@ -58,6 +58,16 @@
   white-space: wrap;
 }
 
+#btnSignUp {
+	background: #4183D7;
+	border: none;
+	transition: 0.3s;
+}
+#btnSignUp:hover {
+	background: #2c75d2;
+	color: #e2e2e2;
+}
+
 #loader {
   border: 10px solid #e2e2e7;
   border-radius: 50%;

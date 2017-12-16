@@ -25,8 +25,9 @@ $(function() {
 		 }
 		}
 		
+		var state = $("#state option:selected").html();
+		
 		var returnline = $('form').find('select[name="returnline"]').val();
-		var state = $('form').find('select[name="state"]').val();
 		var cd = $('form').find('input[name="district"]').val();
 		console.log(cd_state_nation, returnline, state, cd);
 		
@@ -59,7 +60,7 @@ $(function() {
 		$(".dnldcsv").slideUp("fast");
 		console.log("slid up");
 		
-		taxreturnline = $('form').find('select[name="returnline"]').val();
+		taxreturnline = returnline;
 		$("#summary tr").remove();
 		$("#taxcreditdata tr").remove();
 		$("#loader").show();
@@ -105,6 +106,23 @@ $(function() {
 					row.append("</tr>");
 					$("#taxcreditdata").append(row);
 				});
+				
+				var queriedarea = "";
+				if (cd_state_nation == "nation") {
+					queriedarea += "The United States";
+				} else {
+					queriedarea += state;
+					if (cd_state_nation == "cdonly") {
+						queriedarea += " District " + cd;
+					}
+				}
+				console.log(queriedarea);
+				
+				var sumheader = "Summary of Taxpayers in " + queriedarea;
+				document.getElementById("summary-header").innerHTML = sumheader;
+				
+				var taxheader = "Usage of " + returnline + " in " + queriedarea;
+				document.getElementById("taxdata-header").innerHTML = taxheader;
 					
         		console.log("new data loaded");
         		$("#loader").hide();

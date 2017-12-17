@@ -1,32 +1,29 @@
-var onscreendata = "";
+var onscreensummary = "";
+var onscreentaxdata = "";
 var taxreturnline = "";
+var queriedarea = "";
 
 headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total Dependents", "Adjusted Gross Income"]
+
 
 $(function() {
 
 	console.log('hello!');
+	$('[data-toggle="tooltip"]').tooltip()
     
-	$("#loader").hide();
-	$(".dnldcsv").hide();
+    $(".dnldcsv").hide();
 	$(".sub-header").hide();
+	$("#taxcreditdatadiv").hide();
+	$("#summarydiv").hide();
+	$("#loader").hide();
 	
 	$('.getdata').click(function() {
-	
-		/* Querying a district, state, or the nation? */
-		var cd_state_nation = "";
-		var radios = document.getElementsByName('cdstatenation');
-		for (var i = 0, length = radios.length; i < length; i++)
-		{
-		 if (radios[i].checked)
-		 {
-		 	cd_state_nation = radios[i].value;
-		  	break;
-		 }
-		}
+		
+		var cd_state_nation = getcdstatenation();
+		
+		var state = $("#state option:selected").html();
 		
 		var returnline = $('form').find('select[name="returnline"]').val();
-		var state = $('form').find('select[name="state"]').val();
 		var cd = $('form').find('input[name="district"]').val();
 		console.log(cd_state_nation, returnline, state, cd);
 		
@@ -59,8 +56,10 @@ $(function() {
 		$(".dnldcsv").slideUp("fast");
 		console.log("slid up");
 		
-		taxreturnline = $('form').find('select[name="returnline"]').val();
-		$("#summary tr").remove();
+		taxreturnline = returnline;
+		$("#summary").find("tr:gt(0)").remove();
+		//$("#summary tr").remove();
+		//$("#taxcreditdata").find("tr:gt(0)").remove();
 		$("#taxcreditdata tr").remove();
 		$("#loader").show();
 		
@@ -70,10 +69,7 @@ $(function() {
 			type: 'POST',
 			success: function(response) {
 				console.log(response);
-				$("#summary").append("<tr><th>AGI Bracket</th><th>Total</th><th>Single</th><th>Joint</th><th>Head Household</th><th>Total Dependents</th><th>Adjusted Gross Income</th></tr>");
 				$("#taxcreditdata").append("<tr><th>AGI Bracket</th><th>" + taxreturnline + ": Count</th><th>" + taxreturnline + ": Dollars</th>");
-				//var data = JSON.parse(response);
-				//onscreendata = data;
 				
 				var summary = response.r_summary;
 				var taxdata = response.r_taxdata;
@@ -105,7 +101,26 @@ $(function() {
 					row.append("</tr>");
 					$("#taxcreditdata").append(row);
 				});
-					
+				
+				if (cd_state_nation == "nation") {
+					queriedarea = "The United States";
+				} else {
+					queriedarea = state;
+					if (cd_state_nation == "cdonly") {
+						queriedarea += " District " + cd;
+					}
+				}
+				console.log(queriedarea);
+				
+				var sumheader = "Summary of Taxpayers in " + queriedarea;
+				document.getElementById("summary-header").innerHTML = sumheader;
+				
+				var taxheader = "Usage of " + returnline + " in " + queriedarea;
+				document.getElementById("taxdata-header").innerHTML = taxheader;
+				
+				onscreensummary = summary;
+				onscreentaxdata = taxdata;
+				
         		console.log("new data loaded");
         		$("#loader").hide();
         		$(".dnldcsv").slideDown();
@@ -123,17 +138,22 @@ $(function() {
   	$('.dnldcsv').click(function() {
   		var colDelimiter = ',';
   		var lineDelimiter = '\n';
-  		var result = "";
+  		var result = "Summary of Taxpayers in " + queriedarea + lineDelimiter;
   		var rowlength = headings.length;
 		result += headings.join(colDelimiter);
 		result += lineDelimiter;
-  		$.each(onscreendata, function(i,r) {
-  			if (r.length < rowlength) {
-  				rowlength = r.length;
-  				result += " \n";
-  				result += "AGI Bracket," + taxreturnline + ": Count," + taxreturnline + ": Dollars\n";
-  			}
-			$.each(r, function(j, val) {
+  		$.each(onscreensummary, function(i,r) {
+  			$.each(r, function(j, val) {
+				if (j>0) result += colDelimiter;
+				result += val;
+			});
+			result += lineDelimiter;
+		});
+		result += lineDelimiter;
+		result += "Usage of " + taxreturnline + " in " + queriedarea + lineDelimiter;
+		result += "AGI Bracket," + taxreturnline + ": Count," + taxreturnline + ": Dollars\n";
+  		$.each(onscreentaxdata, function(i,r) {
+  			$.each(r, function(j, val) {
 				if (j>0) result += colDelimiter;
 				result += val;
 			});
@@ -150,5 +170,61 @@ $(function() {
         link.setAttribute('download', filename);
         link.click();
     });
+    
+    $('.finddistrict').click(function() {
+  		var zip = $("#zip").val();
+  		if (!(/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip))) {
+  			console.log("invalid zip");
+  			return;
+  		}
+  		console.log(zip);
+  		$.getJSON('/ziptoCD', {
+			zc: zip
+		}, function(data) {
+			console.log(data.state);
+			console.log(data.district);
+			$("#state").val(data.state);
+			$("#state").trigger('change');
+			setTimeout(function(){
+        		$("#district").val(parseInt(data.district));
+				$("#district").trigger('change');
+    		}, 1000);
+		});
+    });
+    
+    $('input[type=radio][name=cdstatenation]').change(function() {
+        var cdstna = getcdstatenation();
+        if (cdstna == "nation") {
+        	$("#enterstatecd").slideUp();
+        	$("#stateselect").slideUp();
+        	$("#district").slideUp();
+        	$("#findcdzip").slideUp();
+        } else if (cdstna == "stateonly") {
+        	document.getElementById("enterstatecd").innerHTML = "Enter your state:";
+        	$("#enterstatecd").slideDown();
+        	$("#stateselect").slideDown();
+        	$("#district").slideUp();
+        	$("#findcdzip").slideUp();
+        } else if (cdstna == "cdonly") {
+        	document.getElementById("enterstatecd").innerHTML = "Enter your state and congressional district:";
+        	$("#enterstatecd").slideDown();
+        	$("#stateselect").slideDown();
+        	$("#district").slideDown();
+        	$("#findcdzip").slideDown();
+        }
+    });
 });
 
+function getcdstatenation() {
+	/* Querying a district, state, or the nation? */
+	var radios = document.getElementsByName('cdstatenation');
+	for (var i = 0, length = radios.length; i < length; i++)
+	{
+	 if (radios[i].checked)
+	 {
+		return(radios[i].value);
+		break;
+	 }
+	}
+}
+	

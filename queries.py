@@ -4,7 +4,16 @@ import string
 conn = sqlite3.connect('cd_by_zip.sqlite3')
 cursor = conn.cursor()
 
-def get_zipcode_list(self, state, district):
+def state_from_zip(zipcode):
+	q = """
+		select state, cd
+		from zips
+		where zip = ?
+		"""
+	results = cursor.execute(q,(zipcode))
+	return results
+
+def get_zipcode_list(state, district):
         q = """
             select zip
             from zips
@@ -12,7 +21,7 @@ def get_zipcode_list(self, state, district):
             and cd = ?
             order by zip
             """
-        results = self.cursor.execute(q,(state,district))
+        results = cursor.execute(q,(state,district))
         return results
 
 def get_summary_data(state, district, cd_state_nation):
@@ -94,3 +103,15 @@ def get_field_data(irs_col, state, district, cd_state_nation):
 		order by category""")
 		theresults = cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col),(state,district))
 	return theresults
+	
+"""	
+output = get_zipcode_list("NY", 15)
+print([i for i in output])
+
+output = state_from_zip(("10032",))
+output = [i for i in output]
+print(output)
+print(output[0][0])
+"""
+
+

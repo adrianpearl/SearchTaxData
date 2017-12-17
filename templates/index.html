@@ -6,6 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
  	<link rel="stylesheet" href="../static/dashtest.css" />
  	<link rel="stylesheet" href="../static/buttonstyle.css" />
@@ -30,6 +32,7 @@
   	
  		<div class="col-sm-4 col-md-3 sidebar">
     		<form class="form-signin" id="taxdataform">
+    			<p>Select a tax provision:</p>
     			<select class="nav-sidebar nav selectpicker" name="returnline" id="returnline" data-live-search="true" data-width="100%">
     				<option value="" selected disabled>Tax Provision</option>
 					<option value="additional child credit">additional child credit</option> 
@@ -90,12 +93,7 @@
 					<option value="unemployment compensation">unemployment compensation</option> 
 				</select>
 				
-				<select name="state" id="state" class="nav-sidebar nav selectpicker" data-live-search="true" data-width="100%">
-					<option value="" selected disabled>State</option>
-				</select>
-				
-				<input type="number" name="district" id="district" min="1" class="form-control nav-number" placeholder="District">
-				
+				<p>Do you want to search a congressional district, a state, or the entire nation?
 				<div class="button-wrap">
 					<input class="hidden radio-label" type="radio" name="cdstatenation" value="cdonly" id="cd-button" checked="checked"/>
 					<label class="button-label" id="cd-label" for="cd-button">
@@ -109,12 +107,29 @@
 					<label class="button-label" id="nation-label" for="nation-button">
 					  <h1>Nation</h1>
 					</label>
-				</div>
+				</div></p>
 				
-				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">go</button>
-				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
+				<p id="enterstatecd">Enter your state and congressional district:</p>
+				<div id="stateselect">
+				<select name="state" id="state" class="nav-sidebar nav selectpicker" data-live-search="true" data-width="100%">
+					<option value="" selected disabled>State</option>
+				</select></div>
+
+				<input type="number" name="district" id="district" min="1" class="form-control nav-number" placeholder="District">
+				
+				<div id="findcdzip">
+				<p>Or, find your district by entering your zipcode:</p>
+				<input type="text" id="zip" placeholder= "Zip Code" pattern= "[0-9]{5}" style="width:49%" />
+				<button type="button" class="finddistrict" id="btnSignUp">find district</button>
+				</div><br>
+				
+				<button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">search</button>
+				<br>
+				<button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
+				<br>
 				
     		</form>
+          	
     		<div id="loader"></div>
     		<p id="invalid"></p>
     	</div>
@@ -122,21 +137,30 @@
     	<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
     		<h1 class="page-header">Search Tax Data in Your District</h1>
     		<div id="map" style="width: 100%"></div><br>
-    		<h2 class="sub-header">Raw Data</h2>
-    		
-          		<div class="table-responsive" id="summarydiv">
-            		<table class="table table-striped" id="summary">
-  						<tbody>
-  						</tbody>
-					</table>
-				</div>
-				<div class="table-responsive" id="taxcreditdatadiv">
-            		<table class="table table-striped" id="taxcreditdata">
-  						<tbody>
-  						</tbody>
-					</table>
-				</div>
-				
+
+    		<h2 class="sub-header" id="summary-header"></h2>
+			<div class="table-responsive" id="summarydiv">
+				<table class="table table-striped" id="summary">
+					<tbody>
+						<tr>
+							<th><a data-toggle="tooltip" title="Hooray!">AGI Bracket</a></th>
+							<th>Total</th>
+							<th>Single</th>
+							<th>Joint</th>
+							<th>Head Household</th>
+							<th>Total Dependents</th>
+							<th>Adjusted Gross Income</th>
+						</tr>	
+					</tbody>
+				</table>
+			</div>
+			<h2 class="sub-header" id="taxdata-header"></h2>
+			<div class="table-responsive" id="taxcreditdatadiv">
+				<table class="table table-striped" id="taxcreditdata">
+					<tbody>
+					</tbody>
+				</table>
+			</div>	
     	</div>
     	
     </div>

@@ -1,5 +1,7 @@
-var onscreendata = "";
+var onscreensummary = "";
+var onscreentaxdata = "";
 var taxreturnline = "";
+var queriedarea = "";
 
 headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total Dependents", "Adjusted Gross Income"]
 
@@ -68,8 +70,6 @@ $(function() {
 			success: function(response) {
 				console.log(response);
 				$("#taxcreditdata").append("<tr><th>AGI Bracket</th><th>" + taxreturnline + ": Count</th><th>" + taxreturnline + ": Dollars</th>");
-				//var data = JSON.parse(response);
-				//onscreendata = data;
 				
 				var summary = response.r_summary;
 				var taxdata = response.r_taxdata;
@@ -102,11 +102,10 @@ $(function() {
 					$("#taxcreditdata").append(row);
 				});
 				
-				var queriedarea = "";
 				if (cd_state_nation == "nation") {
-					queriedarea += "The United States";
+					queriedarea = "The United States";
 				} else {
-					queriedarea += state;
+					queriedarea = state;
 					if (cd_state_nation == "cdonly") {
 						queriedarea += " District " + cd;
 					}
@@ -118,7 +117,10 @@ $(function() {
 				
 				var taxheader = "Usage of " + returnline + " in " + queriedarea;
 				document.getElementById("taxdata-header").innerHTML = taxheader;
-					
+				
+				onscreensummary = summary;
+				onscreentaxdata = taxdata;
+				
         		console.log("new data loaded");
         		$("#loader").hide();
         		$(".dnldcsv").slideDown();
@@ -136,17 +138,22 @@ $(function() {
   	$('.dnldcsv').click(function() {
   		var colDelimiter = ',';
   		var lineDelimiter = '\n';
-  		var result = "";
+  		var result = "Summary of Taxpayers in " + queriedarea + lineDelimiter;
   		var rowlength = headings.length;
 		result += headings.join(colDelimiter);
 		result += lineDelimiter;
-  		$.each(onscreendata, function(i,r) {
-  			if (r.length < rowlength) {
-  				rowlength = r.length;
-  				result += " \n";
-  				result += "AGI Bracket," + taxreturnline + ": Count," + taxreturnline + ": Dollars\n";
-  			}
-			$.each(r, function(j, val) {
+  		$.each(onscreensummary, function(i,r) {
+  			$.each(r, function(j, val) {
+				if (j>0) result += colDelimiter;
+				result += val;
+			});
+			result += lineDelimiter;
+		});
+		result += lineDelimiter;
+		result += "Usage of " + taxreturnline + " in " + queriedarea + lineDelimiter;
+		result += "AGI Bracket," + taxreturnline + ": Count," + taxreturnline + ": Dollars\n";
+  		$.each(onscreentaxdata, function(i,r) {
+  			$.each(r, function(j, val) {
 				if (j>0) result += colDelimiter;
 				result += val;
 			});

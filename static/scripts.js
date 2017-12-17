@@ -3,13 +3,17 @@ var taxreturnline = "";
 
 headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total Dependents", "Adjusted Gross Income"]
 
+
 $(function() {
 
 	console.log('hello!');
+	$('[data-toggle="tooltip"]').tooltip()
     
-	$("#loader").hide();
-	$(".dnldcsv").hide();
+    $(".dnldcsv").hide();
 	$(".sub-header").hide();
+	$("#taxcreditdatadiv").hide();
+	$("#summarydiv").hide();
+	$("#loader").hide();
 	
 	$('.getdata').click(function() {
 		
@@ -51,7 +55,9 @@ $(function() {
 		console.log("slid up");
 		
 		taxreturnline = returnline;
-		$("#summary tr").remove();
+		$("#summary").find("tr:gt(0)").remove();
+		//$("#summary tr").remove();
+		//$("#taxcreditdata").find("tr:gt(0)").remove();
 		$("#taxcreditdata tr").remove();
 		$("#loader").show();
 		
@@ -61,7 +67,6 @@ $(function() {
 			type: 'POST',
 			success: function(response) {
 				console.log(response);
-				$("#summary").append("<tr><th>AGI Bracket</th><th>Total</th><th>Single</th><th>Joint</th><th>Head Household</th><th>Total Dependents</th><th>Adjusted Gross Income</th></tr>");
 				$("#taxcreditdata").append("<tr><th>AGI Bracket</th><th>" + taxreturnline + ": Count</th><th>" + taxreturnline + ": Dollars</th>");
 				//var data = JSON.parse(response);
 				//onscreendata = data;

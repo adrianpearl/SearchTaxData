@@ -6,6 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
  	<link rel="stylesheet" href="../static/dashtest.css" />
  	<link rel="stylesheet" href="../static/buttonstyle.css" />
@@ -132,11 +134,20 @@
     	<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
     		<h1 class="page-header">Search Tax Data in Your District</h1>
     		<div id="map" style="width: 100%"></div><br>
-    		
+
     		<h2 class="sub-header" id="summary-header"></h2>
 			<div class="table-responsive" id="summarydiv">
 				<table class="table table-striped" id="summary">
 					<tbody>
+						<tr>
+							<th>AGI Bracket</th>
+							<th>Total</th>
+							<th>Single</th>
+							<th>Joint</th>
+							<th>Head Household</th>
+							<th>Total Dependents</th>
+							<th>Adjusted Gross Income</th>
+						</tr>	
 					</tbody>
 				</table>
 			</div>
@@ -146,8 +157,7 @@
 					<tbody>
 					</tbody>
 				</table>
-			</div>
-				
+			</div>	
     	</div>
     	
     </div>

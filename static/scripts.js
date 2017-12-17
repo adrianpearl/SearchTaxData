@@ -12,18 +12,8 @@ $(function() {
 	$(".sub-header").hide();
 	
 	$('.getdata').click(function() {
-	
-		/* Querying a district, state, or the nation? */
-		var cd_state_nation = "";
-		var radios = document.getElementsByName('cdstatenation');
-		for (var i = 0, length = radios.length; i < length; i++)
-		{
-		 if (radios[i].checked)
-		 {
-		 	cd_state_nation = radios[i].value;
-		  	break;
-		 }
-		}
+		
+		var cd_state_nation = getcdstatenation();
 		
 		var state = $("#state option:selected").html();
 		
@@ -168,5 +158,61 @@ $(function() {
         link.setAttribute('download', filename);
         link.click();
     });
+    
+    $('.finddistrict').click(function() {
+  		var zip = $("#zip").val();
+  		if (!(/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip))) {
+  			console.log("invalid zip");
+  			return;
+  		}
+  		console.log(zip);
+  		$.getJSON('/ziptoCD', {
+			zc: zip
+		}, function(data) {
+			console.log(data.state);
+			console.log(data.district);
+			$("#state").val(data.state);
+			$("#state").trigger('change');
+			setTimeout(function(){
+        		$("#district").val(parseInt(data.district));
+				$("#district").trigger('change');
+    		}, 1000);
+		});
+    });
+    
+    $('input[type=radio][name=cdstatenation]').change(function() {
+        var cdstna = getcdstatenation();
+        if (cdstna == "nation") {
+        	$("#enterstatecd").slideUp();
+        	$("#stateselect").slideUp();
+        	$("#district").slideUp();
+        	$("#findcdzip").slideUp();
+        } else if (cdstna == "stateonly") {
+        	document.getElementById("enterstatecd").innerHTML = "Enter your state:";
+        	$("#enterstatecd").slideDown();
+        	$("#stateselect").slideDown();
+        	$("#district").slideUp();
+        	$("#findcdzip").slideUp();
+        } else if (cdstna == "cdonly") {
+        	document.getElementById("enterstatecd").innerHTML = "Enter your state and congressional district:";
+        	$("#enterstatecd").slideDown();
+        	$("#stateselect").slideDown();
+        	$("#district").slideDown();
+        	$("#findcdzip").slideDown();
+        }
+    });
 });
 
+function getcdstatenation() {
+	/* Querying a district, state, or the nation? */
+	var radios = document.getElementsByName('cdstatenation');
+	for (var i = 0, length = radios.length; i < length; i++)
+	{
+	 if (radios[i].checked)
+	 {
+		return(radios[i].value);
+		break;
+	 }
+	}
+}
+	

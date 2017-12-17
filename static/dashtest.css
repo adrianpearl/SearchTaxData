@@ -1,3 +1,7 @@
+body {
+	transition: 0.3s;
+}
+
 /*
  * Global add-ons
  */
@@ -62,7 +66,9 @@
 	background: #4183D7;
 	border: none;
 	transition: 0.3s;
+	color: #fff;
 }
+
 #btnSignUp:hover {
 	background: #2c75d2;
 	color: #e2e2e2;

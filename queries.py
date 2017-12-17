@@ -107,8 +107,11 @@ def get_field_data(irs_col, state, district, cd_state_nation):
 """	
 output = get_zipcode_list("NY", 15)
 print([i for i in output])
+
 output = state_from_zip(("10032",))
-print([i for i in output])
+output = [i for i in output]
+print(output)
+print(output[0][0])
 """
 
 

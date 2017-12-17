@@ -30,6 +30,7 @@
   	
  		<div class="col-sm-4 col-md-3 sidebar">
     		<form class="form-signin" id="taxdataform">
+    			<p>Select a tax provision:</p>
     			<select class="nav-sidebar nav selectpicker" name="returnline" id="returnline" data-live-search="true" data-width="100%">
     				<option value="" selected disabled>Tax Provision</option>
 					<option value="additional child credit">additional child credit</option> 
@@ -90,12 +91,7 @@
 					<option value="unemployment compensation">unemployment compensation</option> 
 				</select>
 				
-				<select name="state" id="state" class="nav-sidebar nav selectpicker" data-live-search="true" data-width="100%">
-					<option value="" selected disabled>State</option>
-				</select>
-				
-				<input type="number" name="district" id="district" min="1" class="form-control nav-number" placeholder="District">
-				
+				<p>Do you want to search a congressional district, a state, or the entire nation?
 				<div class="button-wrap">
 					<input class="hidden radio-label" type="radio" name="cdstatenation" value="cdonly" id="cd-button" checked="checked"/>
 					<label class="button-label" id="cd-label" for="cd-button">
@@ -109,9 +105,23 @@
 					<label class="button-label" id="nation-label" for="nation-button">
 					  <h1>Nation</h1>
 					</label>
-				</div>
+				</div></p>
 				
-				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">search</button>
+				<p id="enterstatecd">Enter your state and congressional district:</p>
+				<div id="stateselect">
+				<select name="state" id="state" class="nav-sidebar nav selectpicker" data-live-search="true" data-width="100%">
+					<option value="" selected disabled>State</option>
+				</select></div>
+
+				<input type="number" name="district" id="district" min="1" class="form-control nav-number" placeholder="District">
+				
+				<div id="findcdzip">
+				<p>Or, find your district by entering your zipcode:</p>
+				<input type="text" id="zip" placeholder= "Zip Code" pattern= "[0-9]{5}" style="width:49%" />
+				<button type="button" class="finddistrict" id="btnSignUp">find district</button>
+				</div><br>
+				
+				<button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">search</button>
 				<br><button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
 				
     		</form>

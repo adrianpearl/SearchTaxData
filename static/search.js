@@ -108,7 +108,7 @@ $(document).ready(function(){
 })
 
 simplemaps_congressmap.hooks.zoomable_click_region=function(id){
-	//console.log(id);
+	console.log(id);
 	$("#state").val(id);
 	$("#state").trigger('change');
 }
@@ -133,4 +133,5 @@ simplemaps_congressmap.hooks.zooming_complete=function(){
 		$("#district").trigger('change');
 	}
 	last_zoom = zoom;
+	
 }

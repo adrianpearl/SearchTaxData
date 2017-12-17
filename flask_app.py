@@ -9,9 +9,16 @@ app = Flask(__name__)
 def main():
     return render_template('index.html')
 
-@app.route('/showSignUp')
-def showSignUp():
-    return render_template('signup.html')
+@app.route('/ziptoCD',methods=['GET'])
+def ziptoCD():
+	a = request.args.get('zc', 0)
+	output = queries.state_from_zip((a,))
+	output = [i for i in output]
+	output = output[0]
+	st = output[0]
+	cd = output[1]
+	return jsonify(state=st, district=cd)
+	
 
 @app.route('/signUp',methods=['POST'])
 def signUp():

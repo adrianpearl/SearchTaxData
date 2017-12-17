@@ -9,7 +9,7 @@ var simplemaps_congressmap_mapdata={
     
 		//State defaults
 	state_description: "",
-    state_color: "#88A4BC",
+    state_color: "#90A4AE",
     state_hover_color: "#3B729F",
     //state_url: "http://simplemaps.com",
     border_size: 0.5,

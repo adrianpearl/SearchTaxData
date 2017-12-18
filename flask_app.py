@@ -31,6 +31,9 @@ def signUp():
 	_district = request.form.get('district', '')
 	_cdstatenation = request.form['cdstatenation']
 	
+	if _cdstatenation == "cdonly" and _state in one_district:
+		_cdstatenation = "stateonly"
+	
 	print(_taxreturnline, _state, _district, _cdstatenation)
 	# validate the received values
 	if (not _taxreturnline) or ( (not _state) and _cdstatenation != "nation") or ( (not _district) and _cdstatenation == "cdonly"):

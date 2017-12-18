@@ -9,7 +9,9 @@ headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total
 $(function() {
 
 	console.log('hello!');
-	$('[data-toggle="tooltip"]').tooltip()
+	
+	//uncomment when tooltips are implemented
+	//$('[data-toggle="tooltip"]').tooltip()
     
     $(".dnldcsv").hide();
 	$(".sub-header").hide();

@@ -1,6 +1,13 @@
+// Four global variables to store information presented to the user:
+
+// Data from the summary and tax data tables (stored for retrieval if csv is downloaded)
 var onscreensummary = "";
 var onscreentaxdata = "";
+
+// The tax provision last queried by the user (used in csv download and table headings)
 var taxreturnline = "";
+
+// String representation of the last queried area (i.e. "Nebraska District 1", "Virginia", or "The United States")
 var queriedarea = "";
 
 headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total Dependents", "Adjusted Gross Income"]

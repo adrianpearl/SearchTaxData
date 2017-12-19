@@ -114,3 +114,19 @@ body {
 .main .page-header {
 	margin-top: 0;
 }
+
+#map {
+	width: calc(100% - 80px);
+	z-index: -1; 
+	position: absolute;
+}
+
+#doughnutchart {
+	position: absolute; 
+	pointer-events: none;
+}
+
+#myChart {
+	pointer-events: none; 
+	background-color: rgba(180, 200, 220, 0.4);
+}

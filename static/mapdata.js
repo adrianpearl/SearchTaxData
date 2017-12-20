@@ -48,7 +48,7 @@ var simplemaps_congressmap_mapdata={
     initial_zoom_solo: "no",
     region_hover_opacity: 0.6,
     zoom_out_incrementally: "yes",
-    zoom_percentage: 0.80,
+    zoom_percentage: 0.90,
     zoom_time: 0.7,
     
 		//Popup settings

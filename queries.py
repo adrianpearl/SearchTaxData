@@ -1,5 +1,6 @@
 import sqlite3
 import string
+import numpy as np
 
 conn = sqlite3.connect('cd_by_zip.sqlite3')
 cursor = conn.cursor()
@@ -24,21 +25,18 @@ def get_zipcode_list(state, district):
         results = cursor.execute(q,(state,district))
         return results
         
-def tax_data_every_cd(irs_col):
-	print("get field data every district: ", irs_col)
+def tax_data_every_state(irs_col):
+	print("get field data every state: ", irs_col)
 	q = string.Template("""
-	select b.state, c.cd, description as income_bracket,
+	select b.state, description as income_bracket,
 	sum($COUNT_FIELD) as tax_return_count,
 	sum($FIELD) * 1000 as tax_return_dollars
-	from agi_groups a, tax_info b, zips c
+	from agi_groups a, tax_info b
 	where a.category = b.agi_category
-	and b.zip = c.zip
-	and b.state = c.state
-	and b.state = "VA"
-	group by c.cd, a.category
+	group by b.state, a.category
 	order by agi_category""")
-	theresults = cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col))
-	return theresults
+	cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col))
+	return cursor.fetchall()
 
 def get_summary_data(state, district, cd_state_nation):
 	print("get summary: ", state, district, cd_state_nation)
@@ -119,21 +117,23 @@ def get_field_data(irs_col, state, district, cd_state_nation):
 		order by category""")
 		theresults = cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col),(state,district))
 	return theresults
-	
+
+# new query testing:
 """	
 output = get_zipcode_list("NY", 15)
 print([i for i in output])
 
 output = state_from_zip(("10032",))
 output = [i for i in output]
-print(output)
-print(output[0][0])
 
-#output = get_field_data("amt", "WY", 1, "stateonly")
-output = tax_data_every_cd("amt")
-output = [i for i in output]
-for i in output:
-	print(i)
+#output = get_field_data("amt", "WY", 1, "nation")
+
+output = tax_data_every_state("amt")
+npoutput = np.array(output)
+npoutput = np.delete(npoutput, 0, 1)
+keys = npoutput[:,0]
+vals = npoutput[:,1:].astype(int)
+outputdict = {key: np.sum(vals[keys == key], axis=0) for key in np.unique(keys)}
+for i in outputdict:
+	print(i, outputdict[i])
 """
-
-

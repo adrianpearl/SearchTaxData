@@ -70,10 +70,10 @@ $(document).ready(function(){
 	}	
     
 	$("#state").change(function(){
-		console.log('onchange');
+		//console.log('onchange');
     	var state = this.value;
     	var cdcount = state_cd_count[state]
-    	console.log(cdcount);
+    	//console.log(cdcount);
     	
     	if (state) {
     		simplemaps_congressmap.region_zoom(state);
@@ -89,16 +89,17 @@ $(document).ready(function(){
 	
 	$("#district").change(function(){
     	var state = $('form').find('select[name="state"]').val();
+    	if (!state) {return;}
     	var cd = parseInt(this.value);
-    	console.log(cd);
+    	//console.log(cd);
 		if (cd <= state_cd_count[state]) {
-			console.log("cd zoom");
+			//console.log("cd zoom");
 			if (cd < 10) {
 				cd = state + "0" + cd;
 			} else {
 				cd = state + cd.toString();
 			}
-			console.log(cd);
+			//console.log(cd);
 			simplemaps_congressmap.state_zoom(cd);
 		} else if (cd > state_cd_count[state]) {
 			$("#district").val(state_cd_count[state]);
@@ -108,7 +109,7 @@ $(document).ready(function(){
 })
 
 simplemaps_congressmap.hooks.zoomable_click_region=function(id){
-	console.log(id);
+	//console.log(id);
 	$("#state").val(id);
 	$("#state").trigger('change');
 }

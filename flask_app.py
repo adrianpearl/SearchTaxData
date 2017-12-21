@@ -1,7 +1,9 @@
 from flask import Flask, render_template, json, request, jsonify
 import queries
+import numpy as np
 
 one_district = ['AK', 'DE', 'DC', 'MT', 'ND', 'SD', 'VT', 'WY']
+categories = ['under $25 thousand', '$25 to $50 thousand', '$50 to $75 thousand', '$75 to $100 thousand', '$100 to $200 thousand', 'over $200 thousand']
 
 app = Flask(__name__)
 
@@ -42,11 +44,14 @@ def signUp():
 		
 		if _cdstatenation == "cdonly":
 			_district = int(_district)
+			
 		_taxreturnline = "_".join(_taxreturnline.split(" "))
+		
 		output = queries.get_summary_data(_state, _district, _cdstatenation)
 		summary = [ix for ix in output]
-		output = queries.get_field_data(_taxreturnline, _state, _district, _cdstatenation)
-		taxdata = [ix for ix in output]
+		taxdata = queries.tax_data_every_state(_taxreturnline, _state, _district, _cdstatenation)
+		
+		
 		
 		print(summary)
 		print(taxdata)

@@ -140,6 +140,8 @@ $(function() {
 			},
 			error: function(error) {
 				console.log(error);
+				$("#loader").hide();
+				$('#invalid').text("an error occured");
 			}
 		});
 	});

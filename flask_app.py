@@ -51,12 +51,49 @@ def signUp():
 		summary = [ix for ix in output]
 		taxdata = queries.tax_data_every_state(_taxreturnline, _state, _district, _cdstatenation)
 		
+		for line in summary:
+			print(line)
+		for line in taxdata:
+			print(line)
 		
+		npoutput = np.array(taxdata)
 		
-		print(summary)
-		print(taxdata)
-
-		return jsonify(r_summary=summary, r_taxdata=taxdata)
+		zones = npoutput[:,0] #either zips, cds, or states, depending on the query
+		agigroup = npoutput[:,1]
+		vals = npoutput[:,2:].astype(int)
+		for line in vals:
+			print(line)
+		
+		sumoutput = [[key] + np.sum(vals[agigroup == key], axis=0).tolist() for key in categories]
+		
+		dolpercap = np.divide(vals[:,1], vals[:,0])
+		dolpercap = 5 * ( ( dolpercap/np.mean(dolpercap) ) + 1 )
+		#dolpercap = np.insert(npoutput[:,0:2], 2, dolpercap, axis=1)
+		
+		zoneleveldata = {}
+		
+		for cat in categories:
+			catzones = zones[agigroup == cat]
+			catdata = dolpercap[agigroup == cat]
+			zoneleveldata[cat] = dict(zip(catzones, catdata))
+			
+		"""
+		under25 = dolpercap[agigroup == "under $25 thousand"].tolist()
+		agi25to50 = dolpercap[agigroup == "$25 to $50 thousand"].tolist()
+		agi50to75 = dolpercap[agigroup == "$50 to $75 thousand"].tolist()
+		agi75to100 = dolpercap[agigroup == "$75 to $100 thousand"].tolist()
+		agi100to200 = dolpercap[agigroup == "$100 to $200 thousand"].tolist()
+		over200 = dolpercap[agigroup == "over $200 thousand"].tolist()
+	
+		print("50 to 75:")
+		for line in agi50to75:
+			print(line)
+		"""
+		
+		agi50to75 = zoneleveldata["$50 to $75 thousand"]
+		print(agi50to75)
+				
+		return jsonify(r_summary=summary, r_taxdata=sumoutput, r_chartdata=zoneleveldata)
 
 if __name__ == "__main__":
     app.run()

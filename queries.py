@@ -17,15 +17,15 @@ def state_from_zip(zipcode):
 	return results
 
 def get_zipcode_list(state, district):
-        q = """
-            select zip
-            from zips
-            where state = ?
-            and cd = ?
-            order by zip
-            """
-        results = cursor.execute(q,(state,district))
-        return results
+	q = """
+		select zip
+		from zips
+		where state = ?
+		and cd = ?
+		order by zip
+		"""
+	results = cursor.execute(q,(state,district))
+	return results
         
 def tax_data_every_state(irs_col, state, district, cd_state_nation):
 	print("get field data every state: ", irs_col, state, district, cd_state_nation)
@@ -36,8 +36,10 @@ def tax_data_every_state(irs_col, state, district, cd_state_nation):
 		sum($FIELD) * 1000 as tax_return_dollars
 		from agi_groups a, tax_info b
 		where a.category = b.agi_category
+		and b.zip != "99999"
+		and b.zip != "00000"
 		group by b.state, a.category
-		order by b.state""")
+		order by agi_category""")
 		cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col))
 	elif (cd_state_nation == "stateonly"):
 		q = string.Template("""
@@ -51,7 +53,7 @@ def tax_data_every_state(irs_col, state, district, cd_state_nation):
 		and b.state = c.state
 		and b.zip = c.zip
 		group by c.cd, a.category
-		order by c.cd""")
+		order by agi_category""")
 		cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col),(state,))
 	elif (cd_state_nation == "cdonly"):
 		q = string.Template("""
@@ -65,7 +67,7 @@ def tax_data_every_state(irs_col, state, district, cd_state_nation):
 		and b.state = c.state
 		and c.cd = ?
 		group by c.zip, agi_category
-		order by category""")
+		order by agi_category""")
 		cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col),(state,district))
 	return cursor.fetchall()
 
@@ -159,8 +161,9 @@ output = [i for i in output]
 
 #output = get_field_data("amt", "WY", 1, "nation")
 """
-output = tax_data_every_state("amt", "HI", 1, "cdonly")
+"""
 print()
+output = tax_data_every_state("capital_gains", "OK", 1, "stateonly")
 for row in output:
 	print(row)
 npoutput = np.array(output)
@@ -169,6 +172,8 @@ keys = npoutput[:,0]
 vals = npoutput[:,1:].astype(int)
 categories = ['under $25 thousand', '$25 to $50 thousand', '$50 to $75 thousand', '$75 to $100 thousand', '$100 to $200 thousand', 'over $200 thousand']
 
-outputdict = [[key] + np.sum(vals[keys == key], axis=0).tolist() for key in categories]
-for i in outputdict:
+sumoutput = [[key] + np.sum(vals[keys == key], axis=0).tolist() for key in categories]
+for i in sumoutput:
 	print(i)
+	
+"""

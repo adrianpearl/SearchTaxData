@@ -26,6 +26,19 @@ def get_zipcode_list(state, district):
 		"""
 	results = cursor.execute(q,(state,district))
 	return results
+	
+def tax_data_every_zip(irs_col):
+	q = string.Template("""
+	select b.state, b.zip, description as income_bracket,
+	sum($COUNT_FIELD) as tax_return_count,
+	sum($FIELD) * 1000 as tax_return_dollars
+	from agi_groups a, tax_info b
+	where a.category = b.agi_category
+	and b.zip != "99999"
+	group by b.state
+	order by agi_category""")
+	cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col))
+	return cursor.fetchall()
         
 def tax_data_every_state(irs_col, state, district, cd_state_nation):
 	print("get field data every state: ", irs_col, state, district, cd_state_nation)
@@ -177,3 +190,7 @@ for i in sumoutput:
 	print(i)
 	
 """
+output = tax_data_every_state("capital_gains", "OK", 1, "stateonly")
+#output = tax_data_every_state("capital_gains")
+for row in output[0:100]:
+	print(row)

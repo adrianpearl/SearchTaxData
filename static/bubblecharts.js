@@ -7,18 +7,19 @@ var canvaswoverh = initX2/initY2;
 var viewboxstates = [];
 var viewboxcds = [];
 
-// Holds whatever data the chart is currently displaying
-var chartdata = [];
+var theChart;
 
 $(function() {
 	console.log("bubble charts!");
 	
 	var ctx = document.getElementById("myChart").getContext('2d');
-	var theChart = new Chart(ctx, {
+	theChart = new Chart(ctx, {
 		type: 'bubble',
 		data: popData,
 		options: popOptions
 	});
+	
+	var chartdata = [];
 	
 	simplemaps_congressmap.hooks.complete=function() {
 		resizechart();
@@ -26,18 +27,55 @@ $(function() {
 		setUpViewBoxes();
 		
 		$.each( viewboxcds, function( i, cd ) {
-			if (i == 'IA04') {
-				console.log(cd);
-			}
 			chartdata.push({x: cd['cx'], y: initY2-cd['cy'], r: 2});
 		});
 
 		var newpopData = {
-		  datasets: [{
-			label: ['Districts'],
-			data: chartdata,
-			backgroundColor: "#6699FF"
-		  }]
+		  datasets: 
+		  [
+		  	{
+				label: ['under $25 thousand'],
+				data: chartdata,
+				hidden: false,
+				borderWidth: 0,
+				backgroundColor: "#6699FF"
+		  	},
+		  	{
+				label: ['$25 to $50 thousand'],
+				data: chartdata,
+				hidden: true,
+				borderWidth: 0,
+				backgroundColor: "#6699FF"
+		  	},
+		  	{
+				label: ['$50 to $75 thousand'],
+				data: chartdata,
+				hidden: true,
+				borderWidth: 0,
+				backgroundColor: "#6699FF"
+		  	},
+		  	{
+				label: ['$75 to $100 thousand'],
+				data: chartdata,
+				hidden: true,
+				borderWidth: 0,
+				backgroundColor: "#6699FF"
+		  	},
+		  	{
+				label: ['$100 to $200 thousand'],
+				data: chartdata,
+				hidden: true,
+				borderWidth: 0,
+				backgroundColor: "#6699FF"
+		  	},
+		  	{
+				label: ['over $200 thousand'],
+				data: chartdata,
+				hidden: true,
+				borderWidth: 0,
+				backgroundColor: "#6699FF"
+		  	}
+		  ]
 		};
 	
 		setchartBounds(theChart, 0, initX2, 0, initY2);
@@ -116,8 +154,48 @@ $(function() {
 						
 		theChart.update();
 	});
+	
+	$('input[type=radio][name=chartagi]').change(function() {
+		var agi = getchartAGIgroup();
+		console.log(agi);
+	});
 		
 });
+
+function newChartData(newData, cdstatenation, state, district) {
+	//console.log(newData);
+	//console.log(cdstatenation, state, district);
+	newdatasets = {
+		"under $25 thousand" : [],
+		"$25 to $50 thousand" : [],
+		"$50 to $75 thousand" : [],
+		"$75 to $100 thousand" : [],
+		"$100 to $200 thousand" : [],
+		"over $200 thousand" : []
+	}
+	
+	if (cdstatenation == "stateonly") {
+		$.each( viewboxcds, function( i, cd ) {
+			if (i.includes(state)) {
+				cdint = i.substr(2);
+				while (cdint.charAt(0) == "0") {
+					cdint = cdint.substr(1);
+				}
+				cdint = parseInt(cdint);
+				//console.log(cdint);
+				$.each( newdatasets, function( i, ds ) {
+					ds.push({x: cd['cx'], y: initY2-cd['cy'], r: newData[i][cdint]});	
+				});
+			}
+		});
+	}
+	
+	$.each( theChart.data.datasets, function( i, ds ) {
+		ds.data = newdatasets[ds.label[0]];
+	});
+	theChart.update();
+}
+	
 
 function setUpViewBoxes() {
 	//console.log("setupchart");
@@ -250,3 +328,16 @@ var popOptions = {
 		}
 	}
 };
+
+function getchartAGIgroup() {
+	/* Querying a district, state, or the nation? */
+	var radios = document.getElementsByName('chartagi');
+	for (var i = 0, length = radios.length; i < length; i++)
+	{
+	 if (radios[i].checked)
+	 {
+		return(radios[i].value);
+		break;
+	 }
+	}
+}

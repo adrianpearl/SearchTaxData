@@ -31,6 +31,7 @@ $(function() {
 		var cd_state_nation = getcdstatenation();
 		
 		var state = $("#state option:selected").html();
+		var stateAB = $('form').find('select[name="state"]').val();
 		
 		var returnline = $('form').find('select[name="returnline"]').val();
 		var cd = $('form').find('input[name="district"]').val();
@@ -119,7 +120,7 @@ $(function() {
 						queriedarea += " District " + cd;
 					}
 				}
-				console.log(queriedarea);
+				//console.log(queriedarea);
 				
 				var sumheader = "Summary of Taxpayers in " + queriedarea;
 				document.getElementById("summary-header").innerHTML = sumheader;
@@ -129,6 +130,8 @@ $(function() {
 				
 				onscreensummary = summary;
 				onscreentaxdata = taxdata;
+				
+				newChartData(response.r_chartdata, cd_state_nation, stateAB, cd);
 				
         		console.log("new data loaded");
         		$("#loader").hide();
@@ -211,18 +214,22 @@ $(function() {
         	$("#district").slideUp();
         	$("#findcdzip").slideUp();
         } else if (cdstna == "stateonly") {
-        	document.getElementById("enterstatecd").innerHTML = "Enter your state:";
+        	document.getElementById("enterstatecd").innerHTML = "Enter your state, or find it on the map:";
         	$("#enterstatecd").slideDown();
         	$("#stateselect").slideDown();
         	$("#district").slideUp();
         	$("#findcdzip").slideUp();
         } else if (cdstna == "cdonly") {
-        	document.getElementById("enterstatecd").innerHTML = "Enter your state and congressional district:";
+        	document.getElementById("enterstatecd").innerHTML = "Enter your state and congressional district, or find them on the map:";
         	$("#enterstatecd").slideDown();
         	$("#stateselect").slideDown();
         	$("#district").slideDown();
         	$("#findcdzip").slideDown();
         }
+    });
+    
+    $('#collapse').click(function() {
+    	$(".description").fadeOut(200);
     });
 });
 

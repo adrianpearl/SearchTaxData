@@ -26,7 +26,7 @@ def get_zipcode_list(state, district):
 		"""
 	results = cursor.execute(q,(state,district))
 	return results
-	
+
 def tax_data_every_zip(irs_col):
 	q = string.Template("""
 	select b.state, b.zip, description as income_bracket,
@@ -39,20 +39,20 @@ def tax_data_every_zip(irs_col):
 	order by agi_category""")
 	cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col))
 	return cursor.fetchall()
-        
+
 def tax_data_every_state(irs_col, state, district, cd_state_nation):
 	print("get field data every state: ", irs_col, state, district, cd_state_nation)
 	if (cd_state_nation == "nation"):
 		q = string.Template("""
-		select b.state, description as income_bracket,
+		select b.natclusterzip, description as income_bracket,
 		sum($COUNT_FIELD) as tax_return_count,
 		sum($FIELD) * 1000 as tax_return_dollars
 		from agi_groups a, tax_info b
 		where a.category = b.agi_category
 		and b.zip != "99999"
 		and b.zip != "00000"
-		group by b.state, a.category
-		order by agi_category""")
+		group by b.natclusterzip, a.category
+		order by b.natclusterzip, a.category""")
 		cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col))
 	elif (cd_state_nation == "stateonly"):
 		q = string.Template("""
@@ -165,7 +165,7 @@ def get_field_data(irs_col, state, district, cd_state_nation):
 	return theresults
 
 # new query testing:
-"""	
+"""
 output = get_zipcode_list("NY", 15)
 print([i for i in output])
 
@@ -188,9 +188,9 @@ categories = ['under $25 thousand', '$25 to $50 thousand', '$50 to $75 thousand'
 sumoutput = [[key] + np.sum(vals[keys == key], axis=0).tolist() for key in categories]
 for i in sumoutput:
 	print(i)
-	
+
 """
-output = tax_data_every_state("capital_gains", "OK", 1, "stateonly")
+output = tax_data_every_state("capital_gains", "OK", 1, "nation")
 #output = tax_data_every_state("capital_gains")
 for row in output[0:100]:
 	print(row)

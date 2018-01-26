@@ -3,7 +3,7 @@ import sqlite3
 import string
 import matplotlib.pyplot as plt
 import numpy as np
-from ClusterEqualizer import CEqualizer
+from DotDensityMapping import dotdensitymap
 import csv
 
 np.set_printoptions(precision=5, linewidth=120, suppress=True)
@@ -63,7 +63,7 @@ maxcluster = 0
 
 natnearest = {}
 
-ce = CEqualizer(True, False, 5000, 0.05, 8)
+ddm = dotdensitymap(True, False, 5000, 0.05, 8)
 
 """
 st = "FL"
@@ -72,7 +72,7 @@ mazips = zipcodes[states==st]
 maloc = locations[states==st]
 mafilers = filers[states==st]
 
-labels, means, densities, nearest = ce.fit(maloc, mafilers, int(np.sum(mafilers)/250000))
+labels, means, densities, nearest = ddm.fit(maloc, mafilers, int(np.sum(mafilers)/250000))
 plotsize = densities/np.sum(densities)
 
 plt.figure(2)
@@ -98,7 +98,7 @@ for state in np.unique(states):
 	n_clus = max(int(np.sum(mafilers)/250000), 1)
 	print("clusters: ", n_clus)
 
-	labels, means, densities, nearest = ce.fit(maloc, mafilers, n_clus)
+	labels, means, densities, nearest = ddm.fit(maloc, mafilers, n_clus)
 
 	maxlabel = np.amax(labels)
 	print("maxlabel: ", maxlabel)

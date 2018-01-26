@@ -12,31 +12,30 @@ var queriedarea = "";
 
 headings = ["AGI Category", "Total", "Single", "Joint", "Head Household", "Total Dependents", "Adjusted Gross Income"]
 
-
 $(function() {
 
 	console.log('hello!');
-	
+
 	//uncomment when tooltips are implemented
 	//$('[data-toggle="tooltip"]').tooltip()
-    
+
     $(".dnldcsv").hide();
 	$(".sub-header").hide();
 	$("#taxcreditdatadiv").hide();
 	$("#summarydiv").hide();
 	$("#loader").hide();
-	
+
 	$('.getdata').click(function() {
-		
+
 		var cd_state_nation = getcdstatenation();
-		
+
 		var state = $("#state option:selected").html();
 		var stateAB = $('form').find('select[name="state"]').val();
-		
+
 		var returnline = $('form').find('select[name="returnline"]').val();
 		var cd = $('form').find('input[name="district"]').val();
 		console.log(cd_state_nation, returnline, state, cd);
-		
+
 		/* Any valid query must contain:
 		   a tax provision,
 		   a state, AND
@@ -47,7 +46,7 @@ $(function() {
 			$('#invalid').text('Invalid query - please select a tax provision');
 			console.log("invalid query - please select a tax provision");
 			return;
-		} 
+		}
 		else if ( (!state) && cd_state_nation != "nation" ) {
 			$('#invalid').text('Invalid query - please select a state or query the whole nation');
 			console.log("invalid query - please select a state or query the whole nation");
@@ -58,21 +57,21 @@ $(function() {
 			console.log("invalid query - please select a district or query a state or the nation");
 			return;
 		}
-		
+
 		$('#invalid').text('');
 		$("#taxcreditdatadiv").slideUp();
 		$("#summarydiv").slideUp();
 		$(".sub-header").slideUp();
 		$(".dnldcsv").slideUp("fast");
 		console.log("slid up");
-		
+
 		taxreturnline = returnline;
 		$("#summary").find("tr:gt(0)").remove();
 		//$("#summary tr").remove();
 		//$("#taxcreditdata").find("tr:gt(0)").remove();
 		$("#taxcreditdata tr").remove();
 		$("#loader").show();
-		
+
 		$.ajax({
 			url: '/signUp',
 			data: $('form').serialize(),
@@ -80,10 +79,10 @@ $(function() {
 			success: function(response) {
 				console.log(response);
 				$("#taxcreditdata").append("<tr><th>AGI Bracket</th><th>" + taxreturnline + ": Count</th><th>" + taxreturnline + ": Dollars</th>");
-				
+
 				var summary = response.r_summary;
 				var taxdata = response.r_taxdata;
-				
+
 				$.each(summary, function(i,r) {
 					var row = $("<tr>");
 					$.each(r, function(i, val) {
@@ -97,7 +96,7 @@ $(function() {
 					row.append("</tr>");
 					$("#summary").append(row);
 				});
-				
+
 				$.each(taxdata, function(i,r) {
 					var row = $("<tr>");
 					$.each(r, function(i, val) {
@@ -111,7 +110,7 @@ $(function() {
 					row.append("</tr>");
 					$("#taxcreditdata").append(row);
 				});
-				
+
 				if (cd_state_nation == "nation") {
 					queriedarea = "The United States";
 				} else {
@@ -121,18 +120,18 @@ $(function() {
 					}
 				}
 				//console.log(queriedarea);
-				
+
 				var sumheader = "Summary of Taxpayers in " + queriedarea;
 				document.getElementById("summary-header").innerHTML = sumheader;
-				
+
 				var taxheader = "Usage of " + returnline + " in " + queriedarea;
 				document.getElementById("taxdata-header").innerHTML = taxheader;
-				
+
 				onscreensummary = summary;
 				onscreentaxdata = taxdata;
-				
+
 				newChartData(response.r_chartdata, cd_state_nation, stateAB, cd);
-				
+
         		console.log("new data loaded");
         		$("#loader").hide();
         		$(".dnldcsv").slideDown();
@@ -148,7 +147,7 @@ $(function() {
 			}
 		});
 	});
-  	
+
   	$('.dnldcsv').click(function() {
   		var colDelimiter = ',';
   		var lineDelimiter = '\n';
@@ -173,10 +172,10 @@ $(function() {
 			});
 			result += lineDelimiter;
 		});
-		
+
 		var filename = "taxdata.csv";
 		result = "data:application/csv;charset=utf-8," + result;
-		
+
         data = encodeURI(result);
 
         link = document.createElement('a');
@@ -184,7 +183,7 @@ $(function() {
         link.setAttribute('download', filename);
         link.click();
     });
-    
+
     $('.finddistrict').click(function() {
   		var zip = $("#zip").val();
   		if (!(/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip))) {
@@ -205,7 +204,7 @@ $(function() {
     		}, 1000);
 		});
     });
-    
+
     $('input[type=radio][name=cdstatenation]').change(function() {
         var cdstna = getcdstatenation();
         if (cdstna == "nation") {
@@ -227,7 +226,7 @@ $(function() {
         	$("#findcdzip").slideDown();
         }
     });
-    
+
     $('#collapse').click(function() {
     	$(".description").fadeOut(200);
     });
@@ -245,4 +244,3 @@ function getcdstatenation() {
 	 }
 	}
 }
-	

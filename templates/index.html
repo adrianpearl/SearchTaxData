@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <title>Search U.S. Tax Data</title>
-    
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -13,24 +13,25 @@
  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
- 	
+
  	<script src="../static/bubblecharts.js"></script>
  	<script src="../static/scripts.js"></script>
  	<script src="../static/mapdata.js"></script>
 	<script src="../static/congressmap.js"></script>
+    <script src="../static/codes.js"></script>
 	<script src="../static/search.js"></script>
 	<link rel="stylesheet" href="../static/dashtest.css" />
  	<link rel="stylesheet" href="../static/buttonstyle.css" />
- 	
+
  	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-    
+
   </head>
- 
+
   <body>
-  
+
   	<nav class="navbar navbar-inverse navbar-fixed-top">
   		<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -41,74 +42,74 @@
 		</div>
 		</div>
 	</nav>
-  
+
   	<div class="container-fluid">
   	<div class="row content-row">
-  	
+
  		<div class="col-sm-4 col-md-3 sidebar">
- 			
+
     		<form class="form-signin" id="taxdataform">
     			<p>Select a tax provision:</p>
     			<select class="nav-sidebar nav selectpicker" name="returnline" id="returnline" data-live-search="true" data-width="100%">
     				<option value="" selected disabled>Tax Provision</option>
-					<option value="additional child credit">additional child credit</option> 
-					<option value="additional medicare tax">additional medicare tax</option> 
-					<option value="advance premium credit">advance premium credit</option> 
-					<option value="agi for itemized returns">agi for itemized returns</option> 
-					<option value="amt">amt</option> 
-					<option value="business net income">business net income</option> 
-					<option value="capital gains">capital gains</option> 
-					<option value="child credit">child credit</option> 
-					<option value="child dependent care credit">child dependent care credit</option> 
-					<option value="contributions">contributions</option> 
-					<option value="domestic production">domestic production</option> 
-					<option value="earned income credit">earned income credit</option> 
-					<option value="educator expense">educator expense</option> 
-					<option value="excess advance premium tax credit repayment">excess advance premium tax credit repayment</option> 
-					<option value="excess earned income credit refundable">excess earned income credit refundable</option> 
-					<option value="foreign tax credit">foreign tax credit</option> 
-					<option value="health individual responsibility payment">health individual responsibility payment</option> 
-					<option value="income before credit">income before credit</option> 
-					<option value="income tax">income tax</option> 
-					<option value="ira payment">ira payment</option> 
-					<option value="itemize">itemize</option> 
-					<option value="mortgage interest">mortgage interest</option> 
-					<option value="net investment income tax">net investment income tax</option> 
-					<option value="net premium credit">net premium credit</option> 
-					<option value="nonrefundable education credit">nonrefundable education credit</option> 
-					<option value="ordinary dividends">ordinary dividends</option> 
-					<option value="partnership s corp">partnership s corp</option> 
-					<option value="qualified dividends">qualified dividends</option> 
-					<option value="real estate tax">real estate tax</option> 
-					<option value="refund">refund</option> 
-					<option value="refundable education credit">refundable education credit</option> 
-					<option value="residential energy credit">residential energy credit</option> 
-					<option value="retirement savings credit">retirement savings credit</option> 
-					<option value="salaries wages">salaries wages</option> 
-					<option value="sales tax">sales tax</option> 
-					<option value="self employment health insurance">self employment health insurance</option> 
-					<option value="self employment retirement">self employment retirement</option> 
-					<option value="self employment tax">self employment tax</option> 
-					<option value="slit refund">slit refund</option> 
-					<option value="state local income tax">state local income tax</option> 
-					<option value="statutory adjustment">statutory adjustment</option> 
-					<option value="student loan interest">student loan interest</option> 
-					<option value="tax due at filing">tax due at filing</option> 
-					<option value="tax liability">tax liability</option> 
-					<option value="taxable income">taxable income</option> 
-					<option value="taxable interest">taxable interest</option> 
-					<option value="taxable ira">taxable ira</option> 
-					<option value="taxable pensions annuities">taxable pensions annuities</option> 
-					<option value="taxable social security">taxable social security</option> 
-					<option value="taxes paid">taxes paid</option> 
-					<option value="total income">total income</option> 
-					<option value="total premium credit">total premium credit</option> 
-					<option value="total tax credits">total tax credits</option> 
-					<option value="total tax payments">total tax payments</option> 
-					<option value="tuition">tuition</option> 
-					<option value="unemployment compensation">unemployment compensation</option> 
+					<option value="additional child credit">additional child credit</option>
+					<option value="additional medicare tax">additional medicare tax</option>
+					<option value="advance premium credit">advance premium credit</option>
+					<option value="agi for itemized returns">agi for itemized returns</option>
+					<option value="amt">amt</option>
+					<option value="business net income">business net income</option>
+					<option value="capital gains">capital gains</option>
+					<option value="child credit">child credit</option>
+					<option value="child dependent care credit">child dependent care credit</option>
+					<option value="contributions">contributions</option>
+					<option value="domestic production">domestic production</option>
+					<option value="earned income credit">earned income credit</option>
+					<option value="educator expense">educator expense</option>
+					<option value="excess advance premium tax credit repayment">excess advance premium tax credit repayment</option>
+					<option value="excess earned income credit refundable">excess earned income credit refundable</option>
+					<option value="foreign tax credit">foreign tax credit</option>
+					<option value="health individual responsibility payment">health individual responsibility payment</option>
+					<option value="income before credit">income before credit</option>
+					<option value="income tax">income tax</option>
+					<option value="ira payment">ira payment</option>
+					<option value="itemize">itemize</option>
+					<option value="mortgage interest">mortgage interest</option>
+					<option value="net investment income tax">net investment income tax</option>
+					<option value="net premium credit">net premium credit</option>
+					<option value="nonrefundable education credit">nonrefundable education credit</option>
+					<option value="ordinary dividends">ordinary dividends</option>
+					<option value="partnership s corp">partnership s corp</option>
+					<option value="qualified dividends">qualified dividends</option>
+					<option value="real estate tax">real estate tax</option>
+					<option value="refund">refund</option>
+					<option value="refundable education credit">refundable education credit</option>
+					<option value="residential energy credit">residential energy credit</option>
+					<option value="retirement savings credit">retirement savings credit</option>
+					<option value="salaries wages">salaries wages</option>
+					<option value="sales tax">sales tax</option>
+					<option value="self employment health insurance">self employment health insurance</option>
+					<option value="self employment retirement">self employment retirement</option>
+					<option value="self employment tax">self employment tax</option>
+					<option value="slit refund">slit refund</option>
+					<option value="state local income tax">state local income tax</option>
+					<option value="statutory adjustment">statutory adjustment</option>
+					<option value="student loan interest">student loan interest</option>
+					<option value="tax due at filing">tax due at filing</option>
+					<option value="tax liability">tax liability</option>
+					<option value="taxable income">taxable income</option>
+					<option value="taxable interest">taxable interest</option>
+					<option value="taxable ira">taxable ira</option>
+					<option value="taxable pensions annuities">taxable pensions annuities</option>
+					<option value="taxable social security">taxable social security</option>
+					<option value="taxes paid">taxes paid</option>
+					<option value="total income">total income</option>
+					<option value="total premium credit">total premium credit</option>
+					<option value="total tax credits">total tax credits</option>
+					<option value="total tax payments">total tax payments</option>
+					<option value="tuition">tuition</option>
+					<option value="unemployment compensation">unemployment compensation</option>
 				</select>
-				
+
 				<p>Do you want to search a congressional district, a state, or the entire nation?
 				<div class="button-wrap">
 					<input class="hidden radio-label" type="radio" name="cdstatenation" value="cdonly" id="cd-button" checked="checked"/>
@@ -124,7 +125,7 @@
 					  <h1>Nation</h1>
 					</label>
 				</div></p>
-				
+
 				<p id="enterstatecd">Enter your state and congressional district, or find them on the map:</p>
 				<div id="stateselect">
 				<select name="state" id="state" class="nav-sidebar nav selectpicker" data-live-search="true" data-width="100%">
@@ -132,29 +133,29 @@
 				</select></div>
 
 				<input type="number" name="district" id="district" min="1" class="form-control nav-number" placeholder="District">
-				
+
 				<div id="findcdzip">
 				<p>Or, find your district by entering your zipcode:</p>
 				<input type="text" id="zip" placeholder= "Zip Code" pattern= "[0-9]{5}" style="width:49%" />
 				<button type="button" class="finddistrict" id="btnSignUp">find district</button>
 				</div><br>
-				
+
 				<button id="btnSignUp" class="btn btn-lg btn-primary btn-block getdata" type="button">search</button>
 				<br>
 				<button id="btnSignUp" class="btn btn-lg btn-primary btn-block dnldcsv" type="button">download csv</button>
 				<br>
-				
+
     		</form>
-          	
+
     		<div id="loader"></div>
     		<p id="invalid"></p>
     	</div>
-    	
+
     	<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
-    	
+
     		<div class="bs-callout bs-callout-default description">
     			<a id="collapse">&#10005</a>
-    			
+
 			  	<p>
 				The Tax Cuts and Jobs Act, signed into law by President Trump on December 22nd, 2017, made sweeping changes to our tax code that will affect every individual and business in The United States. One of the most direct ways in which individual taxpayers will be affected is through changes to <strong>important tax provisions</strong> that determine how Americans earn income, pay for healthcare and education, invest and save for retirement, face poverty, and handle almost every other part of their finances.
 				</p>
@@ -162,7 +163,7 @@
 				Fill out the form on the left to search for any provision in the individual tax code and find out how its usage varies with income and geography. Search the whole nation, any state, or zero in on your congressional district.
 				</p>
 			</div>
-    	  	
+
     	  	<!--
     	  	<div class="alert alert-info alert-dismissible description" role="alert">
 			  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -174,18 +175,18 @@
 				<p>
 				Fill out the form on the left to search for any provision in the individual tax code and find out how its usage varies with income and geography. Search the whole nation, any state, or zero in on your congressional district.
 				</p>
-			</div>	
+			</div>
 			-->
-    	  		
+
     		<div>
 				<div id="map"></div>
 				<div id="doughnutchart">
 					<canvas id="myChart"></canvas>
 				</div>
 			</div>
-			
+
 			<div class="spacer"></div>
-			
+
 			<div class="legend-wrap">
 				<div class="legend">hello</div>
 				<div class="button-wrap agibtn-wrap">
@@ -228,7 +229,7 @@
 							<th>Head Household</th>
 							<th>Total Dependents</th>
 							<th>Adjusted Gross Income</th>
-						</tr>	
+						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -238,11 +239,11 @@
 					<tbody>
 					</tbody>
 				</table>
-			</div>	
+			</div>
     	</div>
-    	
+
     </div>
     </div>
- 
+
   </body>
 </html>

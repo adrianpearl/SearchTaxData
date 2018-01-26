@@ -11,27 +11,31 @@ var theChart;
 
 $(function() {
 	console.log("bubble charts!");
-	
+
 	var ctx = document.getElementById("myChart").getContext('2d');
 	theChart = new Chart(ctx, {
 		type: 'bubble',
 		data: popData,
 		options: popOptions
 	});
-	
+
 	var chartdata = [];
-	
+
 	simplemaps_congressmap.hooks.complete=function() {
 		resizechart();
 		viewboxcds = simplemaps_congressmap.calibrate();
 		setUpViewBoxes();
-		
+
 		$.each( viewboxcds, function( i, cd ) {
 			chartdata.push({x: cd['cx'], y: initY2-cd['cy'], r: 2});
 		});
 
+		var hills = zipcodes["90210"];
+		var coords = simplemaps_congressmap.proj(hills.latitude, hills.longitude);
+		console.log(coords);
+
 		var newpopData = {
-		  datasets: 
+		  datasets:
 		  [
 		  	{
 				label: ['under $25 thousand'],
@@ -77,7 +81,7 @@ $(function() {
 		  	}
 		  ]
 		};
-	
+
 		setchartBounds(theChart, 0, initX2, 0, initY2);
 		theChart.data = newpopData;
 		theChart.update();
@@ -88,11 +92,11 @@ $(function() {
 	  clearTimeout(resizeTimer);
 	  resizeTimer = setTimeout(function() {
 		setTimeout(function() {
-			resizechart();	
-	  	}, 250);	
+			resizechart();
+	  	}, 250);
 	  }, 250);
 	});
-	
+
 	$("#state").change(function(){
     	var id = this.value;
     	//console.log("[BUBBLE] state change id: ", id);
@@ -111,7 +115,7 @@ $(function() {
 		}
 		theChart.update();
 	});
-	
+
 	$("#district").change(function(){
     	var state = $('form').find('select[name="state"]').val();
     	if (!state) {return;}
@@ -139,27 +143,27 @@ $(function() {
 		}
 		theChart.update();
 	});
-	
+
 	$('#btnSignUp').click(function() {
-		
+
 		//to update chart bounds when zooming
 		//theChart.config.options.scales.yAxes[0].ticks.max = y2;
 		//theChart.config.options.scales.xAxes[0].ticks.max = x2;
-		
+
 		thedata = theChart.data.datasets[0].data;
-		
+
 		$.each( thedata, function( i, d ) {
 			d.r = Math.floor((Math.random() * 8)+1);
 		});
-						
+
 		theChart.update();
 	});
-	
+
 	$('input[type=radio][name=chartagi]').change(function() {
 		var agi = getchartAGIgroup();
 		console.log(agi);
 	});
-		
+
 });
 
 function newChartData(newData, cdstatenation, state, district) {
@@ -173,7 +177,7 @@ function newChartData(newData, cdstatenation, state, district) {
 		"$100 to $200 thousand" : [],
 		"over $200 thousand" : []
 	}
-	
+
 	if (cdstatenation == "stateonly") {
 		$.each( viewboxcds, function( i, cd ) {
 			if (i.includes(state)) {
@@ -184,18 +188,18 @@ function newChartData(newData, cdstatenation, state, district) {
 				cdint = parseInt(cdint);
 				//console.log(cdint);
 				$.each( newdatasets, function( i, ds ) {
-					ds.push({x: cd['cx'], y: initY2-cd['cy'], r: newData[i][cdint]});	
+					ds.push({x: cd['cx'], y: initY2-cd['cy'], r: newData[i][cdint]});
 				});
 			}
 		});
 	}
-	
+
 	$.each( theChart.data.datasets, function( i, ds ) {
 		ds.data = newdatasets[ds.label[0]];
 	});
 	theChart.update();
 }
-	
+
 
 function setUpViewBoxes() {
 	//console.log("setupchart");
@@ -203,7 +207,7 @@ function setUpViewBoxes() {
 	//console.log(bbxcds);
 	//console.log("Iowa bb: ", bbxcds["IA01"]);
 	//var bbxs = simplemaps_congressmap.calibrate();
-	
+
 	$.each( bbxcds, function( i, bbcd ) {
 		st = i.slice(0, 2);
 		if (viewboxstates[st] == undefined) {
@@ -224,7 +228,7 @@ function setUpViewBoxes() {
 			}
 		}
 	});
-	
+
 	scalingfactor = Math.sqrt(1.11);
 	//console.log("sf: ", scalingfactor)
 	for (var key in viewboxstates) {
@@ -243,14 +247,14 @@ function adjustViewBox(vbst, add_center) {
 		vbst['cx'] = (vbst['x'] + vbst['x2'])/2;
 		vbst['cy'] = (vbst['y'] + vbst['y2'])/2;
 	}
-	
+
 	vbw = (vbst['x2'] - vbst['x']);
 	vbh = (vbst['y2'] - vbst['y']);
-		
+
 	var deltax = vbw*(scalingfactor - 1)/2;
 	vbst['x2'] += deltax;
 	vbst['x'] -= deltax;
-	
+
 	var deltay = vbh*(scalingfactor - 1)/2;
 	vbst['y2'] += deltay;
 	vbst['y'] -= deltay;
@@ -272,7 +276,7 @@ function adjustViewBox(vbst, add_center) {
 		vbst['y'] -= deltay;
 	}
 }
-	
+
 
 function setchartBounds(chart, minx, maxx, miny, maxy) {
 	chart.config.options.scales.yAxes[0].ticks.max = maxy;

@@ -189,8 +189,8 @@ sumoutput = [[key] + np.sum(vals[keys == key], axis=0).tolist() for key in categ
 for i in sumoutput:
 	print(i)
 
-"""
 output = tax_data_every_state("capital_gains", "OK", 1, "nation")
 #output = tax_data_every_state("capital_gains")
 for row in output[0:100]:
 	print(row)
+"""

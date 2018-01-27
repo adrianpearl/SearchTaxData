@@ -23,9 +23,7 @@
 	<link rel="stylesheet" href="../static/dashtest.css" />
  	<link rel="stylesheet" href="../static/buttonstyle.css" />
 
- 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
   </head>
@@ -34,7 +32,6 @@
 
   	<nav class="navbar navbar-inverse navbar-fixed-top">
   		<div class="container-fluid">
-		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
 		  <div class="navbar-brand">
 		  	<div class="navbar-title">Search Tax Data</div>
@@ -154,7 +151,7 @@
     	<div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
 
     		<div class="bs-callout bs-callout-default description">
-    			<a id="collapse">&#10005</a>
+    			<a id="collapse">#10005</a>
 
 			  	<p>
 				The Tax Cuts and Jobs Act, signed into law by President Trump on December 22nd, 2017, made sweeping changes to our tax code that will affect every individual and business in The United States. One of the most direct ways in which individual taxpayers will be affected is through changes to <strong>important tax provisions</strong> that determine how Americans earn income, pay for healthcare and education, invest and save for retirement, face poverty, and handle almost every other part of their finances.
@@ -164,19 +161,9 @@
 				</p>
 			</div>
 
-    	  	<!--
-    	  	<div class="alert alert-info alert-dismissible description" role="alert">
-			  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<p>
-				The Tax Cuts and Jobs Act, signed into law by President Trump on December 22nd, 2017, made sweeping changes to our tax code that will affect every individual and business in The United States. One of the most direct ways in which individual taxpayers will be affected is through changes to <strong>important tax provisions</strong> that determine how Americans earn income, pay for healthcare and education, invest and save for retirement, face poverty, and handle almost every other part of their finances.
-				</p>
-				<p>
-				Fill out the form on the left to search for any provision in the individual tax code and find out how its usage varies with income and geography. Search the whole nation, any state, or zero in on your congressional district.
-				</p>
-			</div>
-			-->
+            <div class="legend-wrap">
+				<div class="legend">hello</div>
+            </div>
 
     		<div>
 				<div id="map"></div>
@@ -187,34 +174,31 @@
 
 			<div class="spacer"></div>
 
-			<div class="legend-wrap">
-				<div class="legend">hello</div>
-				<div class="button-wrap agibtn-wrap">
-					<input class="hidden radio-label" type="radio" name="chartagi" value="under25" id="agi1" checked="checked"/>
-					<label class="button-label agibtn-label" for="agi1">
-					  <h1>< 25</h1>
-					</label>
-					<input class="hidden radio-label" type="radio" name="chartagi" value="25to50" id="agi2"/>
-					<label class="button-label agibtn-label" for="agi2">
-					  <h1>25 - 50</h1>
-					</label>
-					<input class="hidden radio-label" type="radio" name="chartagi" value="50to75" id="agi3"/>
-					<label class="button-label agibtn-label" for="agi3">
-					  <h1>50 - 75</h1>
-					</label>
-					<input class="hidden radio-label" type="radio" name="chartagi" value="75to100" id="agi4"/>
-					<label class="button-label agibtn-label" for="agi4">
-					  <h1>75 - 100</h1>
-					</label>
-					<input class="hidden radio-label" type="radio" name="chartagi" value="100to200" id="agi5"/>
-					<label class="button-label agibtn-label" for="agi5">
-					  <h1>100 - 200</h1>
-					</label>
-					<input class="hidden radio-label" type="radio" name="chartagi" value="over200" id="agi6"/>
-					<label class="button-label agibtn-label" for="agi6">
-					  <h1>> 200</h1>
-					</label>
-				</div>
+			<div class="button-wrap agibtn-wrap">
+				<input class="hidden radio-label" type="radio" name="chartagi" value="under $25 thousand" id="agi1" checked="checked"/>
+				<label class="button-label agibtn-label" for="agi1">
+				  <h1>< 25</h1>
+				</label>
+				<input class="hidden radio-label" type="radio" name="chartagi" value="$25 to $50 thousand" id="agi2"/>
+				<label class="button-label agibtn-label" for="agi2">
+				  <h1>25 - 50</h1>
+				</label>
+				<input class="hidden radio-label" type="radio" name="chartagi" value="$50 to $75 thousand" id="agi3"/>
+				<label class="button-label agibtn-label" for="agi3">
+				  <h1>50 - 75</h1>
+				</label>
+				<input class="hidden radio-label" type="radio" name="chartagi" value="$75 to $100 thousand" id="agi4"/>
+				<label class="button-label agibtn-label" for="agi4">
+				  <h1>75 - 100</h1>
+				</label>
+				<input class="hidden radio-label" type="radio" name="chartagi" value="$100 to $200 thousand" id="agi5"/>
+				<label class="button-label agibtn-label" for="agi5">
+				  <h1>100 - 200</h1>
+				</label>
+				<input class="hidden radio-label" type="radio" name="chartagi" value="over $200 thousand" id="agi6"/>
+				<label class="button-label agibtn-label" for="agi6">
+				  <h1>> 200</h1>
+				</label>
 			</div>
 
     		<h2 class="sub-header" id="summary-header"></h2>

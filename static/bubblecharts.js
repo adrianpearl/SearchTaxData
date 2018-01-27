@@ -9,6 +9,8 @@ var viewboxcds = [];
 
 var theChart;
 
+var vidiris = ['#440154', '#440558', '#450a5c', '#450e60', '#451465', '#461969', '#461d6d', '#462372', '#472775', '#472c7a', '#46307c', '#45337d', '#433880', '#423c81', '#404184', '#3f4686', '#3d4a88', '#3c4f8a', '#3b518b', '#39558b', '#37598c', '#365c8c', '#34608c', '#33638d', '#31678d', '#2f6b8d', '#2d6e8e', '#2c718e', '#2b748e', '#29788e', '#287c8e', '#277f8e', '#25848d', '#24878d', '#238b8d', '#218f8d', '#21918d', '#22958b', '#23988a', '#239b89', '#249f87', '#25a186', '#25a584', '#26a883', '#27ab82', '#29ae80', '#2eb17d', '#35b479', '#3cb875', '#42bb72', '#49be6e', '#4ec16b', '#55c467', '#5cc863', '#61c960', '#6bcc5a', '#72ce55', '#7cd04f', '#85d349', '#8dd544', '#97d73e', '#9ed93a', '#a8db34', '#b0dd31', '#b8de30', '#c3df2e', '#cbe02d', '#d6e22b', '#e1e329', '#eae428', '#f5e626', '#fde725'];
+
 $(function() {
 	console.log("bubble charts!");
 
@@ -30,19 +32,15 @@ $(function() {
 			chartdata.push({x: cd['cx'], y: initY2-cd['cy'], r: 2});
 		});
 
-		var hills = zipcodes["90210"];
-		var coords = simplemaps_congressmap.proj(hills.latitude, hills.longitude);
-		console.log(coords);
-
 		var newpopData = {
 		  datasets:
 		  [
 		  	{
 				label: ['under $25 thousand'],
 				data: chartdata,
-				hidden: false,
+				hidden: true,
 				borderWidth: 0,
-				backgroundColor: "#6699FF"
+				backgroundColor: ["#6699FF", "#FF9966"]
 		  	},
 		  	{
 				label: ['$25 to $50 thousand'],
@@ -61,7 +59,7 @@ $(function() {
 		  	{
 				label: ['$75 to $100 thousand'],
 				data: chartdata,
-				hidden: true,
+				hidden: false,
 				borderWidth: 0,
 				backgroundColor: "#6699FF"
 		  	},
@@ -144,7 +142,7 @@ $(function() {
 		theChart.update();
 	});
 
-	$('#btnSignUp').click(function() {
+	/*$('#btnSignUp').click(function() {
 
 		//to update chart bounds when zooming
 		//theChart.config.options.scales.yAxes[0].ticks.max = y2;
@@ -157,19 +155,27 @@ $(function() {
 		});
 
 		theChart.update();
-	});
+	});*/
 
 	$('input[type=radio][name=chartagi]').change(function() {
 		var agi = getchartAGIgroup();
-		console.log(agi);
+		//console.log(agi);
+		$.each( theChart.data.datasets, function( i, ds ) {
+			if (ds.label[0] == agi) {
+				ds.hidden = false;
+			} else {
+				ds.hidden = true;
+			}
+		});
+		theChart.update();
 	});
 
 });
 
-function newChartData(newData, cdstatenation, state, district) {
+function newChartData(newData) {
 	//console.log(newData);
-	//console.log(cdstatenation, state, district);
-	newdatasets = {
+	newdataset = [];
+	newcolors = {
 		"under $25 thousand" : [],
 		"$25 to $50 thousand" : [],
 		"$50 to $75 thousand" : [],
@@ -178,24 +184,26 @@ function newChartData(newData, cdstatenation, state, district) {
 		"over $200 thousand" : []
 	}
 
-	if (cdstatenation == "stateonly") {
-		$.each( viewboxcds, function( i, cd ) {
-			if (i.includes(state)) {
-				cdint = i.substr(2);
-				while (cdint.charAt(0) == "0") {
-					cdint = cdint.substr(1);
-				}
-				cdint = parseInt(cdint);
-				//console.log(cdint);
-				$.each( newdatasets, function( i, ds ) {
-					ds.push({x: cd['cx'], y: initY2-cd['cy'], r: newData[i][cdint]});
-				});
-			}
+	zips = newData.zipcodes;
+	zonedata = newData.zonedata;
+
+	$.each( zips, function( i, zip ) {
+		geo = zipcodes[zip];
+		coords = simplemaps_congressmap.proj(geo.latitude, geo.longitude);
+		newdataset.push({x: coords.x, y: initY2 - coords.y, r: 4});
+	});
+
+	$.each( zonedata, function( category, catdata ) {
+		$.each( catdata, function( i, value ) {
+			intval = parseInt(value);
+			color = vidiris[parseInt(value)];
+			newcolors[category].push(color);
 		});
-	}
+	});
 
 	$.each( theChart.data.datasets, function( i, ds ) {
-		ds.data = newdatasets[ds.label[0]];
+		ds.data = newdataset;
+		ds.backgroundColor = newcolors[ds.label[0]];
 	});
 	theChart.update();
 }
@@ -276,7 +284,6 @@ function adjustViewBox(vbst, add_center) {
 		vbst['y'] -= deltay;
 	}
 }
-
 
 function setchartBounds(chart, minx, maxx, miny, maxy) {
 	chart.config.options.scales.yAxes[0].ticks.max = maxy;

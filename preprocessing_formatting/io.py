@@ -64,19 +64,13 @@ us_state_abbrev = {
     with open('states.txt', 'w') as file:
     	file.write(filedata)
 """
-nearest = {}
+colors = []
 
-with open('../nationalnearest.csv', 'r') as infile:
+with open('viridiscolors.txt', 'r') as infile:
     for line in infile:
-        linedata = line.split(",")
-        cluster = linedata[0]
-        zipcode = linedata[1][0:-1]
-        nearest[cluster] = zipcode
+        linedata = line[:].split(" ")[2:]
+        for item in linedata:
+            colors.append(item[1:-3])
 
-with open('../nationalclusters.csv', 'r') as clusterfile:
-    with open('../natclusterzips.csv', 'w') as clusterzipfile:
-        for line in clusterfile:
-            linedata = line.split(",")
-            zipcode = linedata[0]
-            cluster = linedata[1][0:-1]
-            clusterzipfile.write("%s,%s\n" % (zipcode, nearest[cluster]))
+with open('colormapping.txt', 'w') as outfile:
+    outfile.write(str(colors))

@@ -77,7 +77,7 @@ $(function() {
 			data: $('form').serialize(),
 			type: 'POST',
 			success: function(response) {
-				console.log(response);
+				//console.log(response);
 				$("#taxcreditdata").append("<tr><th>AGI Bracket</th><th>" + taxreturnline + ": Count</th><th>" + taxreturnline + ": Dollars</th>");
 
 				var summary = response.r_summary;
@@ -130,7 +130,7 @@ $(function() {
 				onscreensummary = summary;
 				onscreentaxdata = taxdata;
 
-				newChartData(response.r_chartdata, cd_state_nation, stateAB, cd);
+				newChartData(response.r_chartdata);
 
         		console.log("new data loaded");
         		$("#loader").hide();

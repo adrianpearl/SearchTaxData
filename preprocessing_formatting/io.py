@@ -1,4 +1,6 @@
 import csv
+import json
+
 us_state_abbrev = {
     'Alabama': 'AL',
     'Alaska': 'AK',
@@ -64,13 +66,14 @@ us_state_abbrev = {
     with open('states.txt', 'w') as file:
     	file.write(filedata)
 """
-colors = []
+options = []
 
-with open('viridiscolors.txt', 'r') as infile:
+with open('taxlineoptions.txt', 'r') as infile:
     for line in infile:
-        linedata = line[:].split(" ")[2:]
-        for item in linedata:
-            colors.append(item[1:-3])
+        print(line)
+        option = line.split("\"")[1]
+        print(option)
+        options.append(option)
 
-with open('colormapping.txt', 'w') as outfile:
-    outfile.write(str(colors))
+with open('taxprovisions.json', 'w') as outfile:
+    json.dump(options, outfile)

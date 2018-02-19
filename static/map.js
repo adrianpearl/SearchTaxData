@@ -103,6 +103,7 @@ function setup() {
         .data(categories)
         .enter()
         .append("div")
+        .style("font-size", "1em")
         .html(function (d) {return d;})
         .on("click", switchBracket);
 
@@ -131,7 +132,9 @@ function setup() {
     renderDataset();
     t1 = performance.now();
     t0 = performance.now();
+    filltables();
     chartSummaryIncome();
+    chartTaxUsage();
     t1 = performance.now();
     console.log("Render dataset: " + (t1 - t0) + " milliseconds.")
 
@@ -200,7 +203,9 @@ function zoomon(d) {
       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
       .on("end", function() {
           renderDataset();
+          filltables();
           switchSummaryIncome();
+          switchTaxUsage();
       });
 }
 
@@ -256,7 +261,7 @@ function renderDataset() {
     d3.select(".dotsize")
         .html(parseInt(dotsize).toString());
 
-    d3.select(".region")
+    d3.selectAll(".region")
         .html(region);
 }
 
@@ -446,7 +451,9 @@ function loadNewData(newdata) {
     }
     dataset = datasets[bracket];
     renderDataset();
-    d3.select(".mapwrap")
+    filltables();
+    switchTaxUsage();
+    d3.select(".data")
         .style("opacity", "1.0");
     d3.select("#loader").remove();
     //SHOW DATA AGAIN

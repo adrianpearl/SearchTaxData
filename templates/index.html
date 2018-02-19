@@ -181,7 +181,7 @@ path:hover {
 }
 
 #loader {
-  position: absolute;
+  position: fixed;
   opacity: 1.0;
   top: 50%;
   bottom: 50%;
@@ -194,6 +194,19 @@ path:hover {
   height: 60px;
   -webkit-animation: spin 1.5s linear infinite; /* Safari */
   animation: spin 1.5s linear infinite;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 28px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 /* Safari */
@@ -216,7 +229,7 @@ path:hover {
             </div>
             The Tax Cuts and Jobs Act, signed into law by President Trump on December 22nd, 2017, made sweeping changes to our tax code that will affect every individual and business in The United States. One of the most direct ways in which individual taxpayers will be affected is through changes to <strong>important tax provisions</strong> that determine how Americans earn income, pay for healthcare and education, invest and save for retirement, face poverty, and handle almost every other part of their finances.
             <p>
-            Choose a tax provision below and find out how its usage varies with income and geography. Search any congressional district or state, or the entire nation.
+            Choose a tax provision below and find out how its usage varies with income and geography. Search the entire nation, or click on a state or congressional district to narrow your search.
             </p>
         </div>
         <div class="data">
@@ -253,12 +266,23 @@ path:hover {
                     </h2>
                 </div>
             </div>
+            <div class="taxwrap">
+                <div class="maptitle">
+                    <h2>
+                        Usage of the
+                        <span class="pieprovision"></span>
+                        provision in
+                        <span class="region"></span>
+                    </h2>
+                </div>
+            </div>
         </div>
     </div>
-<!--<div class="loading-overlay">
+<div class="loading-overlay">
     <div id="loader"></div>
-</div>-->
+</div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
 <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
 <script src="../static/kdTree.js"></script>

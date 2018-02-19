@@ -1,3 +1,5 @@
+d3.select(".taxwrap").hide();
+
 var margin = {top: 50, left: 150, bottom: 50};
 var cw = (width - margin.left)/2,
     ch = 2*height/3;
@@ -14,9 +16,6 @@ var summarycolors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b"];
 
 var summaryoffset = 0.75*margin.left,
     incomeoffset = 0.9*margin.left;
-
-var summarytable, taxtable;
-var incomedata, summarydata;
 
 // set x scale
 y = d3.scaleBand()
@@ -40,7 +39,8 @@ var yAxis = d3.axisLeft(y)
         return d.substring(0, d.lastIndexOf(" ")); });
 
 var xAxis = d3.axisBottom(x)
-    .tickFormat(d3.formatPrefix(".1", 1e6))
+    .ticks(10)
+    .tickFormat(function(d) { return d/1e6; })
     .tickSize(-(ch - margin.top - margin.bottom));
 
 var xAxis2 = d3.axisBottom(x2)
@@ -65,8 +65,189 @@ function customYAxis(g) {
     g.selectAll(".tick line").attr("stroke", "#fff");
 }
 
+var taxsvg = d3.select(".taxwrap").append("svg")
+    .attr("width", width)
+    .attr("height", ch);
+var radius = Math.min(width, ch) / 2.5;
+var usersg = taxsvg.append("g")
+    .attr("transform", "translate(" + ((width-radius) / 3) + "," + ch / 2 + ")");
+var dollarsg = taxsvg.append("g")
+    .attr("transform", "translate(" + (((2 * width) + radius) / 3) + "," + ch / 2 + ")");
+// Define the div for the tooltip
+
+var piecolor = d3.scaleOrdinal(d3.schemeAccent);
+
+var userspie = d3.pie()
+    .sort(null)
+    .value(function(d) { return d.users; });
+
+var dollarspie = d3.pie()
+    .sort(null)
+    .value(function(d) { return d.dollars; });
+
+var piepath = d3.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(radius - 60);
+
+var pielabel = d3.arc()
+    .outerRadius(radius - 40)
+    .innerRadius(radius - 40);
+
+var summarytable, taxtable;
+var incomedata = [], summarydata = [], taxdata = [];
+
+function chartTaxUsage() {
+    var piedata = [
+        {"category" : "under 25", "users" : 20, "dollars" : 50},
+        {"category" : "under 50", "users" : 30, "dollars" : 40},
+        {"category" : "under 75", "users" : 40, "dollars" : 30},
+        {"category" : "under 100", "users" : 50, "dollars" : 20}
+    ]
+
+    var arc = usersg.selectAll("path")
+        .data(userspie(taxdata))
+        .enter()
+        .append("path")
+
+    arc.on("mouseover", function(d) {
+            //console.log(d);
+            angle = (d.endAngle + d.startAngle)/2;
+            angle = (Math.PI/2) - angle;
+            //console.log(angle);
+            userstip.transition()
+                .duration(200)
+                .attr( "fill-opacity", 0.9 );
+            userstip.text(d.value)
+                .attr("transform", function(d) { return "translate(" + (1.15*radius*Math.cos(angle)) + "," + (-1.15*radius*Math.sin(angle)) + ")"; })
+            })
+        .on("mouseout", function(d) {
+            userstip.transition()
+                .duration(500)
+                .attr( "fill-opacity", 0 );
+            });
+
+    arc.transition()
+        .duration(500)
+        .attr("fill", function(d, i) {
+            return piecolor(d.data.category);
+        })
+        .attr("d", piepath)
+        .each(function(d) {
+            this._current = d;
+        }); // store the initial angles
+
+    var arc2 = dollarsg.selectAll("path")
+        .data(dollarspie(taxdata))
+        .enter()
+        .append("path");
+
+    arc2.on("mouseover", function(d) {
+            //console.log(d);
+            angle = (d.endAngle + d.startAngle)/2;
+            angle = (Math.PI/2) - angle;
+            //console.log(angle);
+            dollarstip.transition()
+                .duration(200)
+                .attr( "fill-opacity", 0.9 );
+            dollarstip.text(d.value)
+                .attr("transform", function(d) { return "translate(" + (1.15*radius*Math.cos(angle)) + "," + (-1.15*radius*Math.sin(angle)) + ")"; })
+            })
+        .on("mouseout", function(d) {
+            dollarstip.transition()
+                .duration(500)
+                .attr( "fill-opacity", 0 );
+            });
+
+    arc2.transition()
+        .duration(500)
+        .attr("fill", function(d, i) {
+            return piecolor(d.data.category);
+        })
+        .attr("d", piepath)
+        .each(function(d) {
+            this._current = d;
+        }); // store the initial angles
+
+    var userstip = usersg.append("text")
+        .attr("transform",
+            "translate(" + 0 + " ," + 0 + ")")
+        .attr( "fill-opacity", 0 )
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .text("Users");
+
+    var dollarstip = dollarsg.append("text")
+        .attr("transform",
+            "translate(" + 0 + " ," + 0 + ")")
+        .attr( "fill-opacity", 0 )
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .text("Dollars");
+
+    usersg.append("text")
+        .attr("transform",
+            "translate(" + 0 + " ," + 9 + ")")
+        .style("text-anchor", "middle")
+        .html("users per bracket");
+
+    dollarsg.append("text")
+        .attr("transform",
+            "translate(" + 0 + " ," + 0 + ")")
+        .style("text-anchor", "middle")
+        .text("total dollars");
+
+    var legend = taxsvg.selectAll(".legend")
+        .data(taxdata)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) { return "translate(" + (30 + (i * (width-60) / 6)) + "," + (ch - 20) + ")"; });
+
+    legend.append("rect")
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", function(d, i) {return piecolor(d.category);});
+
+    legend.append("text")
+        .attr("x", 20)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text(function(d, i) {
+            //console.log(d.category);
+            return d.category.substring(0, d.category.lastIndexOf(" "));
+        });
+
+}
+
+function arcTween(a) {
+    var i = d3.interpolate(this._current, a);
+    this._current = i(0);
+    return function(t) {
+        return piepath(i(t));
+    };
+}
+
+function switchTaxUsage() {
+    var piedata = [
+        {"category" : "under 25", "users" : 50, "dollars" : 50},
+        {"category" : "under 50", "users" : 40, "dollars" : 40},
+        {"category" : "under 75", "users" : 30, "dollars" : 30},
+        {"category" : "under 100", "users" : 20, "dollars" : 20}
+    ]
+
+    var arc = usersg.selectAll("path")
+        .data(userspie(taxdata))
+        .transition().duration(750).attrTween("d", arcTween);
+
+    var arc2 = dollarsg.selectAll("path")
+        .data(dollarspie(taxdata))
+        .transition().duration(750).attrTween("d", arcTween);
+
+    d3.select(".taxwrap").show();
+
+}
+
 function chartSummaryIncome() {
-    filltables();
 
     //console.log("summarydata: ", summarydata);
     summaryg.append("rect")
@@ -107,7 +288,7 @@ function chartSummaryIncome() {
         .attr("fill", "#777")
         .style("font-size", "0.7em")
         .style("text-anchor", "middle")
-        .text("thousands of people");
+        .text("millions of people");
 
     summaryg.append("text")
         .attr("transform",
@@ -174,62 +355,59 @@ function chartSummaryIncome() {
     summaryg.append("g")
         .attr("class", "income")
 
-    update();
-
-}
-
-function update() {
-
     var summarygs = summaryg.select("g.summary")
         .selectAll("g")
         .data(d3.stack().keys(keys)(summarydata))
         .enter().append("g")
             .attr("fill", function(d) { return z(d.key); })
         .selectAll("rect")
-        .data(function(d) { return d; });
-
-    summarygs.enter().append("rect")
+        .data(function(d) { return d; })
+        .enter().append("rect")
             .attr("x", function(d) { return summaryoffset + x(d[0]); })
             .attr("y", function(d) { return margin.top + y(d.data.category); })
             .attr("width", function(d) { return x(d[1]) - x(d[0]); })
             .attr("height", y.bandwidth());
 
-    summarygs.exit().remove();
-
     var incomegs = summaryg.select("g.income")
-        .selectAll("g")
-        .data(incomedata);
-
-    incomegs.enter().append("rect")
+        .selectAll("rect")
+        .data(incomedata)
+        .enter().append("rect")
             .attr("fill", "#a05d56")
             .attr("x", function(d) { return incomeoffset + x2(0) + cw; })
             .attr("y", function(d) { return margin.top + y(d.category); })
             .attr("height", y.bandwidth())
             .attr("width", function(d) { return x2(d.AGI) - x2(0); });
 
-    incomegs.exit().remove();
-
 }
 
 function switchSummaryIncome() {
-    filltables();
-
-    console.log(d3.max(incomedata, function(d) { return d.AGI; }));
 
     x.domain([0, d3.max(summarydata, function(d) { return d.Total; })]).nice();
     x2.domain([0, d3.max(incomedata, function(d) { return d.AGI; })]).nice();
 
+    var summarygs = summaryg.select("g.summary")
+        .selectAll("g")
+        .data(d3.stack().keys(keys)(summarydata))
+        .selectAll("rect")
+        .data(function(d) { return d; });
+
+    var incomegs = summaryg.select("g.income")
+        .selectAll("rect")
+        .data(incomedata);
+
     var svgtr = d3.select(".summarywrap").transition();
 
     // Make the changes
-        svgtr.select(".x.axis")
-            .duration(750)
-            .call(customXAxis);
-        svgtr.select(".x2.axis")
-            .duration(750)
-            .call(customXAxis2);
+    svgtr.select(".x.axis")
+        .duration(750)
+        .call(customXAxis);
+    svgtr.select(".x2.axis")
+        .duration(750)
+        .call(customXAxis2);
 
-    update();
+    summarygs.attr("x", function(d) {return summaryoffset + x(d[0]); })         .attr("width", function(d) { return x(d[1]) - x(d[0]); });
+
+    incomegs.attr("width", function(d) { return x2(d.AGI) - x2(0); });
 
 }
 
@@ -269,8 +447,9 @@ function filltables() {
             addzipdata(tree.root, null);
         }
     }
-    incomedata = [],
-    summarydata = [];
+    incomedata.splice(0, incomedata.length);
+    summarydata.splice(0, summarydata.length);
+    taxdata.splice(0, taxdata.length);
     for (var cat in summarytable) {
         summarydata.push({
             "category" : cat,
@@ -283,6 +462,11 @@ function filltables() {
         incomedata.push({
             "category" : cat,
             "AGI" : summarytable[cat][5]
+        });
+        taxdata.push({
+            "category" : cat,
+            "users" : taxtable[cat][0],
+            "dollars" : taxtable[cat][1]
         });
     }
 }

@@ -45,6 +45,8 @@ function getdata() {
             .html("by filers who include");
         d3.select(".provision")
             .html("the " + provision + " provision on their returns");
+        d3.select(".pieprovision")
+            .html(provision);
         d3.select(".nonusers")
             .html("and those who don't:");
     };

@@ -243,8 +243,6 @@ function switchTaxUsage() {
         .data(dollarspie(taxdata))
         .transition().duration(750).attrTween("d", arcTween);
 
-    d3.select(".taxwrap").show();
-
 }
 
 function chartSummaryIncome() {

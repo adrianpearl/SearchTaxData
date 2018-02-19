@@ -49,6 +49,8 @@ function getdata() {
             .html(provision);
         d3.select(".nonusers")
             .html("and those who don't:");
+
+        d3.select(".taxwrap").show();
     };
     req.addEventListener("progress", prog, false);
     req.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<canvas width="960" height="600"></canvas>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script src="kdTree.js"></script>
+<script src="FIPS.js"></script>
+<script>
+console.log("hello top");
+
+var width = 960,
+    height = 600;
+
+var projection = d3.geoAlbersUsa()
+    .scale(1280)
+    .translate([width / 2, height / 2]);
+
+var context = d3.select("canvas").node().getContext("2d");
+var path = d3.geoPath().context(context)
+    .projection(projection);
+
+var pathnullp = d3.geoPath().context(context)
+    .projection(null);
+
+circle = d3.geoCircle();
+
+context.strokeStyle = "rgba(60, 210, 80, 1.0)";
+context.fillStyle = "rgba(20, 120, 210, 1.0)";
+
+function distance(a, b) {
+  var dx = a.cx-b.cx;
+  var dy = a.cy-b.cy;
+  return dx*dx + dy*dy;
+}
+
+var trees = new Object();
+var dataset = new Object();
+var dotsize = 4000.0;
+
+d3.json("build/us.json", function(error, us) {
+    if (error) return console.error(error);
+
+    var t0 = performance.now();
+    context.beginPath();
+    path(topojson.feature(us, us.objects.nation));
+    context.fillStyle = "rgba(220, 220, 220, 1.0)";
+    context.fill();
+    context.closePath();
+
+    context.beginPath();
+    path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }));
+    context.stroke();
+    context.closePath();
+
+    var t1 = performance.now();
+    console.log("States stroke: " + (t1 - t0) + " milliseconds.")
+});
+
+d3.json("zipsgeo.json", function(error, us) {
+    if (error) throw error;
+
+    var t0 = performance.now();
+    trees = setupTrees(us);
+    var t1 = performance.now();
+    console.log("Set up trees: " + (t1 - t0) + " milliseconds.")
+
+    d3.json("zipcounts.json", function(error, counts) {
+        if (error) throw error;
+
+        context.fillStyle = "rgba(20, 120, 210, 1.0)";
+        dataset = counts;
+        t0 = performance.now();
+        renderDataset(0);
+        t1 = performance.now();
+        console.log("Render dataset: " + (t1 - t0) + " milliseconds.")
+
+        t0 = performance.now();
+        trees = setupTrees(us);
+        t1 = performance.now();
+        console.log("Rebuild trees: " + (t1 - t0) + " milliseconds.")
+
+        context.fillStyle = "rgba(244, 164, 66, 1.0)";
+        t0 = performance.now();
+        renderDataset(1);
+        t1 = performance.now();
+        console.log("Rebuild trees: " + (t1 - t0) + " milliseconds.")
+    });
+});
+
+function setupTrees(data) {
+    var thetrees = new Object();
+
+    for (const [state, zips] of Object.entries(data)) {
+        //console.log(state);
+        tree = new kdTree(zips, distance, ["cx","cy"]);
+        if (state == "HI") {
+            console.log(zips);
+            console.log(tree);
+        }
+        thetrees[state] = tree;
+    }
+    return thetrees;
+}
+
+function renderDataset(index) {
+
+    /*
+    tree = trees["HI"]
+    //console.log(tree);
+    var s = 0;
+    var i = 0;
+    context.strokeStyle = "rgba(20, 120, 210, 1.0)";
+    //console.log(tree);
+    while (tree.root != null) {
+        s += renderDot(tree, tree.root, 0, 0);
+    }
+    console.log("TN sum: ", s);
+    */
+
+    for (state in trees) {
+        //console.log(state);
+        tree = trees[state];
+        while (tree.root != null) {
+            s = renderDot(tree, tree.root, index, 0);
+        }
+    }
+}
+
+function renderDot(tree, treenode, index, s) {
+    var zipgeo = (treenode.obj);
+    //console.log("zipcode: ", zipgeo.zipcode);
+    filers = parseInt(dataset[zipgeo.zipcode][index]);
+    s = s + filers;
+
+    if (filers > dotsize) {
+        drawDots(zipgeo, parseInt(Math.floor(filers/dotsize)));
+        tree.remove(zipgeo);
+        return s;
+    }
+
+    var sum = 0;
+    sum = sum + filers;
+    neighbors = [zipgeo];
+
+    while (sum < dotsize) {
+        //console.log("sum: ", sum);
+        var neighbor = tree.nearest(zipgeo, 2);
+        if (neighbor.length == 0) {
+            // No neighbors returned - there weren't enough unused nodes in
+            // the tree to add up to a dot
+            console.log("couldn't find enough neighbors");
+            return s;
+        }
+        //console.log(neighbor);
+        ngeo = neighbor[0][0];
+        //console.log("neighborzip: ", ngeo.zipcode);
+        nfilers = parseInt(dataset[ngeo.zipcode][index]);
+        if (nfilers > dotsize) {
+            n = parseInt(Math.floor(nfilers/dotsize));
+            drawDots(ngeo, n);
+        } else {
+            neighbors.push(ngeo);
+            sum = sum + nfilers;
+        }
+        s = s + nfilers;
+        tree.remove(ngeo);
+        //console.log("removed: ", r);
+    }
+
+    // Neighbors is now a group of nearby zips whose statistics add up to at
+    // least 'dotsize'
+    drawDot(neighbors);
+    tree.remove(zipgeo);
+    return s;
+}
+
+function drawDots(zipgeo, n) {
+    //console.log("drawdots: ", n);
+    minx = zipgeo.minx;
+    maxx = zipgeo.maxx;
+    miny = zipgeo.miny;
+    maxy = zipgeo.maxy;
+    while (n--) {
+        var x = (Math.random()*(maxx-minx)) + minx;
+        var y = (Math.random()*(maxy-miny)) + miny;
+
+        //console.log(x, y);
+
+        context.beginPath();
+        path(circle.center([x,y]).radius(0.05)());
+        context.fill();
+    }
+}
+
+function drawDot(neighbors) {
+    //console.log("draw dot");
+    var cxsum = 0;
+    var cysum = 0;
+    for (i in neighbors) {
+        neighbor = neighbors[i];
+        cxsum += neighbor.cx;
+        cysum += neighbor.cy;
+    }
+    mx = cxsum / neighbors.length;
+    my = cysum / neighbors.length;
+
+    //console.log(mx, my);
+
+    context.beginPath();
+    path(circle.center([mx,my]).radius(0.05)());
+    context.fill();
+}
+
+/*d3.json("build/zips.json", function(error, zctas) {
+    if (error) throw error;
+    output = [];
+    features = topojson.feature(zctas, zctas.objects.zips).features;
+
+    var l=features.length;
+    console.log(l);
+    var i = 17000;
+    while(i < l) {
+        //console.log(i);
+        f = features[i]
+        z = f.id;
+        b = pathnullp.bounds(f);
+
+        output.push({
+            zip: z,
+            minx: b[0][0],
+            maxx: b[1][0],
+            miny: b[0][1],
+            maxy: b[1][1]
+        });
+        i = i + 1;
+    }
+
+    console.log("hello");
+    downloadCSV(output);
+});
+
+function convertArrayOfObjectsToCSV(args) {
+    var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+    data = args.data || null;
+    if (data == null || !data.length) {
+        return null;
+    }
+
+    columnDelimiter = args.columnDelimiter || ',';
+    lineDelimiter = args.lineDelimiter || '\n';
+
+    keys = Object.keys(data[0]);
+
+    result = '';
+    //result += keys.join(columnDelimiter);
+    //result += lineDelimiter;
+
+    data.forEach(function(item) {
+        ctr = 0;
+        keys.forEach(function(key) {
+            if (ctr > 0) result += columnDelimiter;
+
+            result += item[key];
+            ctr++;
+        });
+        result += lineDelimiter;
+    });
+
+    return result;
+}
+
+function downloadCSV(outdata) {
+    var filename, link;
+    var csv = convertArrayOfObjectsToCSV({
+        data: outdata
+    });
+    if (csv == null) return;
+
+    filename = 'export.csv';
+
+    if (!csv.match(/^data:text\/csv/i)) {
+        csv = 'data:text/csv;charset=utf-8,' + csv;
+    }
+    data = encodeURI(csv);
+
+    link = document.createElement('a');
+    link.setAttribute('href', data);
+    link.setAttribute('download', filename);
+    //document.body.appendChild(link);
+    console.log("hi");
+    link.click();
+}*/
+
+</script>

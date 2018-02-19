@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+    background-color: #fff;
+}
+
+#cds {
+    pointer-events: none;
+    fill: none;
+}
+
+#cds .active {
+    pointer-events: all;
+}
+
+#cd-borders {
+    fill: none;
+    stroke: #6C7A89;
+    stroke-width: 0.0px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+#bubble {
+    pointer-events: none;
+}
+
+#states {
+  fill: #ECF0F1;
+}
+
+#states .active {
+  /*fill: none;*/
+  pointer-events: none;
+}
+
+#state-borders {
+  fill: none;
+  stroke: #6C7A89;
+  stroke-width: 0.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+path:hover {
+    fill:#BDC3C7;
+}
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script>
+
+var width = 800,
+    height = 500;
+
+var projection = d3.geoAlbersUsa()
+    .scale(1080)
+    .translate([width / 2, height / 2]);
+
+var path = d3.geoPath()
+    .projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height)
+
+var g = svg.append("g");
+
+d3.json("https://gist.githubusercontent.com/adrianpearl/d220ba6495918884b836cf4e09f32553/raw/7c0fc6c7ae59b6657ca635c7892e03228a3f5684/us.json", function(error, us) {
+    if (error) return console.error(error);
+
+    g.append("g")
+        .attr("id", "states")
+      .selectAll("path")
+        .data(topojson.feature(us, us.objects.states).features)
+      .enter().append("path")
+        .attr("d", path)
+        .on("click", clicked);
+
+    g.append("path")
+        .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+        .attr("id", "state-borders")
+        .attr("d", path);
+});
+
+function clicked(d) {
+    console.log(d);
+    var coords = projection.invert(d3.mouse(this));
+    console.log(coords);
+    clickinside = pointInPolygon(coords, d.geometry.coordinates[0][0]);
+    console.log("Click inside state? ", clickinside);
+}
+
+// from http://bl.ocks.org/bycoffe/5575904
+function pointInPolygon(point, vs) {
+    console.log(vs);
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+    var xi, xj, i, intersect,
+        x = point[0],
+        y = point[1],
+        inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        /*pi = projection(vs[i]),
+        pj = projection(vs[j]);
+        console.log(pi);*/
+        xi = vs[i][0],
+        yi = vs[i][1],
+        xj = vs[j][0],
+        yj = vs[j][1],
+        intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+}
+</script>
+
+</body>

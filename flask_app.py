@@ -1,7 +1,27 @@
 from flask import Flask, render_template, json, request, jsonify
-import queries
+import numpy as np
+import sqlite3
+import string
 
 one_district = ['AK', 'DE', 'DC', 'MT', 'ND', 'SD', 'VT', 'WY']
+categories = ['under $25 thousand', '$25 to $50 thousand', '$50 to $75 thousand', '$75 to $100 thousand', '$100 to $200 thousand', 'over $200 thousand']
+
+conn = sqlite3.connect('cd_by_zip.sqlite3')
+cursor = conn.cursor()
+
+def tax_data_every_zip(irs_col):
+	q = string.Template("""
+	select a.description, b.zip,
+	$COUNT_FIELD as tax_return_count,
+    $FIELD * 1000 as tax_return_dollars
+	from agi_groups a, tax_info b
+	where a.category = b.agi_category
+	and b.zip != "99999"
+    and b.zip != "00000"
+	order by a.description
+	""")
+	cursor.execute(q.substitute(COUNT_FIELD=irs_col+"_count",FIELD=irs_col))
+	return cursor.fetchall()
 
 app = Flask(__name__)
 
@@ -9,50 +29,27 @@ app = Flask(__name__)
 def main():
     return render_template('index.html')
 
-@app.route('/ziptoCD',methods=['GET'])
-def ziptoCD():
-	a = request.args.get('zc', 0)
-	output = queries.state_from_zip((a,))
-	output = [i for i in output]
-	output = output[0]
-	st = output[0]
-	cd = output[1]
-	return jsonify(state=st, district=cd)
-	
+@app.route('/getTaxData',methods=['POST'])
+def getTaxData():
 
-@app.route('/signUp',methods=['POST'])
-def signUp():
+    provision = request.form.get('taxprovision', '')
+    print(provision)
+    provision = "_".join(provision.split(" "))
 
-	print(request.form)
+    output = np.array(tax_data_every_zip(provision))
+    categories = output[:,0]
+    zips = output[:,1]
+    count_dollars = output[:,2:].astype(int)
 
-	# read the posted values from the UI
-	_taxreturnline = request.form.get('returnline', '')
-	_state = request.form.get('state', '')
-	_district = request.form.get('district', '')
-	_cdstatenation = request.form['cdstatenation']
-	
-	if _cdstatenation == "cdonly" and _state in one_district:
-		_cdstatenation = "stateonly"
-	
-	print(_taxreturnline, _state, _district, _cdstatenation)
-	# validate the received values
-	if (not _taxreturnline) or ( (not _state) and _cdstatenation != "nation") or ( (not _district) and _cdstatenation == "cdonly"):
-		return json.dumps({'html':'<span>Invalid query</span>'})
-	else:
-		
-		if _cdstatenation == "cdonly":
-			_district = int(_district)
-		_taxreturnline = "_".join(_taxreturnline.split(" "))
-		output = queries.get_summary_data(_state, _district, _cdstatenation)
-		summary = [ix for ix in output]
-		output = queries.get_field_data(_taxreturnline, _state, _district, _cdstatenation)
-		taxdata = [ix for ix in output]
-		
-		print(summary)
-		print(taxdata)
+    taxData = {}
 
-		return jsonify(r_summary=summary, r_taxdata=taxdata)
+    for cat in np.unique(categories):
+        print(cat)
+        catzips = zips[categories == cat]
+        catdata = count_dollars[categories == cat]
+        taxData[cat] = dict(zip(catzips, catdata.tolist()))
+
+    return jsonify(taxdata=taxData)
 
 if __name__ == "__main__":
     app.run()
-

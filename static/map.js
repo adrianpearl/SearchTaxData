@@ -48,7 +48,7 @@ var natrad = 1.0,
 
 var categories = ["under $25", "$25 to $50", "$50 to $75", "$75 to $100", "$100 to $200", "over $200"]
 
-d3.json("https://rawgit.com/adrianpearl/d220ba6495918884b836cf4e09f32553/raw/d1737c98dd6fd68f172b4a348bc11222278560af/us.json", function(error, us) {
+d3.json("https://cdn.rawgit.com/adrianpearl/d220ba6495918884b836cf4e09f32553/raw/d1737c98dd6fd68f172b4a348bc11222278560af/us.json", function(error, us) {
     if (error) return console.error(error);
 
     var t0 = performance.now();
